@@ -1,0 +1,8 @@
+name: JSONForms example
+type: module
+description: Demonstrates how to use JSONForms.
+package: JSONForms
+core_version_requirement: ^9
+php: 7.4
+dependencies:
+  - json_forms:json_forms

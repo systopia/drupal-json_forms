@@ -1,0 +1,33 @@
+parameters:
+	paths:
+		- src
+		- tests
+		- modules/json_forms_example/src
+	scanFiles:
+		- vendor/drupal/core/tests/Drupal/Tests/UnitTestCase.php
+	bootstrapFiles:
+		- vendor/autoload.php
+	level: 9
+	checkTooWideReturnTypesInProtectedAndPublicMethods: true
+	checkUninitializedProperties: true
+	checkMissingCallableSignature: true
+	treatPhpDocTypesAsCertain: false
+	exceptions:
+		check:
+			missingCheckedExceptionInThrows: true
+			tooWideThrowType: true
+		checkedExceptionClasses:
+			- \Assert\AssertionFailedException
+		implicitThrows: false
+	ignoreErrors:
+		# Note paths are prefixed with ""*/" to wirk with inspections in PHPStorm because of:
+		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
+		- '#^Method Drupal\\Core\\Form\\FormBuilderInterface::getForm\(\) invoked with \d+ parameters, 1 required.$#'
+		- '/^Parameter #1 \$form \(array<int\|string, mixed>\) of method [^\s]+::(build|validate|submit)Form\(\) should be contravariant with parameter \$form \(array\) of method Drupal\\Core\\Form\\(FormInterface|FormBase)::(build|validate|submit)Form\(\)$/'
+		-
+			message: '#^Variable property access on mixed.$#'
+			path: */src/JsonForms/Definition/Control/ControlDefinition.php
+		-
+			message: '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported.$#'
+			path: */src/Form/Control/ObjectArrayFactory.php
+	tmpDir: .phpstan

@@ -1,0 +1,7 @@
+json_forms_example.example:
+  path: '/json-forms/example'
+  defaults:
+    _controller:  '\Drupal\json_forms_example\Controller\ExampleController::example'
+    _title: 'JSONForms example'
+  requirements:
+    _permission: 'access content'

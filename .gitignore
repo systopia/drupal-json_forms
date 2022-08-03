@@ -1,0 +1,7 @@
+/.phpcs.cache
+/.phpstan/
+/.phpunit.result.cache
+/composer.lock
+/tools/*/vendor/
+/tools/*/composer.lock
+/vendor/

@@ -1,0 +1,68 @@
+{
+    "name": "drupal/json_forms",
+    "description": "Create a Drupal form from a JSONForms definition.",
+    "type": "drupal-custom-module",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Drupal\\json_forms\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Drupal\\Tests\\json_forms\\": "tests/src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/systopia/opis-json-schema-ext"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/systopia/expression-language-ext"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8",
+        "systopia/expression-language-ext": "dev-main",
+        "systopia/opis-json-schema-ext": "dev-main"
+    },
+    "require-dev": {
+        "drupal/core": "^9",
+        "drupal/core-dev": "^9"
+    },
+    "scripts": {
+        "composer-phpstan": [
+            "@composer --working-dir=tools/phpstan"
+        ],
+        "composer-tools": [
+            "@composer-phpstan"
+        ],
+        "phpcs": [
+            "@php vendor/bin/phpcs"
+        ],
+        "phpcbf": [
+            "@php vendor/bin/phpcbf"
+        ],
+        "phpstan": [
+            "@php tools/phpstan/vendor/bin/phpstan"
+        ],
+        "phpunit": [
+            "@php vendor/bin/phpunit --coverage-text"
+        ],
+        "test": [
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ]
+    }
+}

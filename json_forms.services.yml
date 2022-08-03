@@ -1,0 +1,17 @@
+# We cannot use things like autowiring or "!tagged_iterator":
+# https://www.drupal.org/project/drupal/issues/3111008
+
+services:
+  Drupal\json_forms\Form\FormArrayFactoryInterface:
+    class: Drupal\json_forms\Form\FormArrayFactory
+
+  Drupal\json_forms\Form\Validation\FormValidationMapperInterface:
+    class: Drupal\json_forms\Form\Validation\FormValidationMapper
+
+  Opis\JsonSchema\Validator:
+    class: Opis\JsonSchema\Validator
+    factory: [Drupal\json_forms\Form\Validation\OpisValidatorFactory, getValidator]
+
+  Drupal\json_forms\Form\Validation\FormValidatorInterface:
+    class: Drupal\json_forms\Form\Validation\FormValidator
+    arguments: ['@Opis\JsonSchema\Validator']

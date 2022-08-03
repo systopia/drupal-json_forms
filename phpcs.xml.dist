@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CiviCRM - PHPStan"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+  <file>src</file>
+  <file>tests</file>
+  <file>modules/json_forms_example/src</file>
+
+  <arg name="extensions" value="php"/>
+  <arg name="cache" value=".phpcs.cache"/>
+  <arg name="colors"/>
+  <arg value="sp"/>
+
+  <!-- Exit with code 0 if warnings, but no error occurred -->
+  <config name="ignore_warnings_on_exit" value="true"/>
+
+  <rule ref="vendor/drupal/coder/coder_sniffer/Drupal">
+    <!-- Conflicts with PHPStan type hints -->
+    <exclude name="Drupal.Commenting.FunctionComment.InvalidReturn"/>
+    <exclude name="Drupal.Commenting.FunctionComment.ParamTypeSpaces"/>
+    <exclude name="Drupal.Commenting.FunctionComment.ReturnTypeSpaces"/>
+    <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
+
+    <!-- False positive with license header -->
+    <exclude name="Drupal.Commenting.FileComment.NamespaceNoFileDoc"/>
+
+    <!-- False positive when license header is set and variable has no comment -->
+    <!--<exclude name="Drupal.Commenting.VariableComment.WrongStyle"/>-->
+
+    <!-- Do not use object as type hint for \stdClass -->
+    <exclude name="Drupal.Commenting.FunctionComment.IncorrectParamVarName"/>
+
+    <exclude name="Drupal.Commenting.FunctionComment.Missing"/>
+    <exclude name="Drupal.Commenting.DocComment.MissingShort"/>
+    <exclude name="Drupal.Commenting.FunctionComment.MissingParamComment"/>
+    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
+    <exclude name="Drupal.Commenting.ClassComment.Missing"/>
+    <exclude name="Drupal.Commenting.VariableComment.Missing"/>
+  </rule>
+
+  <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice"/>
+
+  <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+  <rule ref="Generic.CodeAnalysis.EmptyStatement">
+    <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedCatch"/>
+  </rule>
+  <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
+  <rule ref="Generic.Files.OneClassPerFile"/>
+  <rule ref="Generic.Files.OneInterfacePerFile"/>
+  <rule ref="Generic.Files.OneObjectStructurePerFile"/>
+  <rule ref="Generic.Files.OneTraitPerFile"/>
+  <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
+  <rule ref="Generic.Metrics.CyclomaticComplexity"/>
+  <rule ref="Generic.Metrics.NestingLevel"/>
+  <rule ref="Generic.NamingConventions.AbstractClassNamePrefix"/>
+  <rule ref="Generic.NamingConventions.InterfaceNameSuffix"/>
+  <rule ref="Generic.NamingConventions.TraitNameSuffix"/>
+  <rule ref="Generic.PHP.RequireStrictTypes"/>
+  <rule ref="PSR1.Files.SideEffects"/>
+  <rule ref="PSR12.Classes.ClassInstantiation"/>
+  <rule ref="PSR12.Properties.ConstantVisibility"/>
+  <rule ref="Squiz.PHP.CommentedOutCode"/>
+  <rule ref="Squiz.PHP.GlobalKeyword"/>
+  <rule ref="Squiz.Strings.DoubleQuoteUsage">
+    <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
+  </rule>
+
+  <!-- Lines can be 120 chars long, but never show errors -->
+  <rule ref="Generic.Files.LineLength">
+    <properties>
+      <property name="lineLimit" value="120"/>
+      <property name="absoluteLineLimit" value="0"/>
+    </properties>
+  </rule>
+
+  <!-- Ban some functions -->
+  <rule ref="Generic.PHP.ForbiddenFunctions">
+    <properties>
+      <property name="forbiddenFunctions" type="array">
+        <element key="sizeof" value="count"/>
+        <element key="delete" value="unset"/>
+        <element key="print" value="echo"/>
+        <element key="is_null" value="null"/>
+        <element key="create_function" value="null"/>
+      </property>
+    </properties>
+  </rule>
+</ruleset>
