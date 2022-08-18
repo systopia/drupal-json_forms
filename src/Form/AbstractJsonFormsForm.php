@@ -88,6 +88,10 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $form_state->set('jsonSchema', $jsonSchema);
     $form_state->set('uiSchema', $uiSchema);
 
+    if (new \stdClass() == $uiSchema) {
+      return [];
+    }
+
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
 
     return $this->formArrayFactory->createFormArray($definition, $form_state);
