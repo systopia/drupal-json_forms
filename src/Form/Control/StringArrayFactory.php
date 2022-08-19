@@ -46,7 +46,7 @@ class StringArrayFactory implements ConcreteFormArrayFactoryInterface {
 
     $form = [
       '#type' => 'textfield',
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getMaxLength()) {
       $form['#maxlength'] = $definition->getMaxLength();

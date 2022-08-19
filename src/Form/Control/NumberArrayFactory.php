@@ -49,7 +49,7 @@ final class NumberArrayFactory implements ConcreteFormArrayFactoryInterface {
       '#type' => 'number',
       '#value_callback' => NumberValueCallback::class . '::convert',
       '#_type' => $definition->getType(),
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getExclusiveMinimum()) {
       $form['#min'] = $definition->getExclusiveMinimum() + \PHP_FLOAT_MIN;

@@ -27,14 +27,14 @@ use Systopia\JsonSchema\Errors\ErrorCollector;
 final class ValidationResult {
 
   /**
-   * @var array<string, mixed>
+   * @var array<int|string, mixed>
    */
   private array $data;
 
   private ErrorCollector $errorCollector;
 
   /**
-   * @param array<string, mixed> $data
+   * @param array<int|string, mixed> $data
    * @param \Systopia\JsonSchema\Errors\ErrorCollector $errorCollector
    */
   public function __construct(array $data, ErrorCollector $errorCollector) {
@@ -43,7 +43,7 @@ final class ValidationResult {
   }
 
   /**
-   * @return array<string, mixed>
+   * @return array<int|string, mixed>
    */
   public function getData(): array {
     return $this->data;

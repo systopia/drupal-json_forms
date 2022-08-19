@@ -44,7 +44,7 @@ final class SelectArrayFactory implements ConcreteFormArrayFactoryInterface {
     return [
       '#type' => 'select',
       '#options' => OptionsBuilder::buildOptions($definition),
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

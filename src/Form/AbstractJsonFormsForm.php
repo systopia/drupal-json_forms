@@ -37,6 +37,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class AbstractJsonFormsForm extends FormBase {
 
+  public const FLAG_RECALCULATE_ONCHANGE = 1;
+
   public const INTERNAL_VALUES_KEY = '__';
 
   protected FormArrayFactoryInterface $formArrayFactory;
@@ -80,13 +82,15 @@ abstract class AbstractJsonFormsForm extends FormBase {
   public function buildForm(array $form,
     FormStateInterface $form_state,
     \stdClass $jsonSchema = NULL,
-    \stdClass $uiSchema = NULL
+    \stdClass $uiSchema = NULL,
+    int $flags = 0
   ): array {
     Assertion::notNull($jsonSchema);
     Assertion::notNull($uiSchema);
 
     $form_state->set('jsonSchema', $jsonSchema);
     $form_state->set('uiSchema', $uiSchema);
+    $form_state->set('recalculateOnChange', (bool) ($flags & self::FLAG_RECALCULATE_ONCHANGE));
 
     if (new \stdClass() == $uiSchema) {
       return [];
@@ -102,13 +106,24 @@ abstract class AbstractJsonFormsForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $formState
    */
   public function validateForm(array &$form, FormStateInterface $formState): void {
-    parent::validateForm($form, $formState);
-    $validationResult = $this->formValidator->validate($formState);
-    $this->formValidationMapper->mapErrors($validationResult, $formState);
-    $this->formValidationMapper->mapData($validationResult, $formState);
+    if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
+      parent::validateForm($form, $formState);
+      $validationResult = $this->formValidator->validate($formState);
+      $this->formValidationMapper->mapErrors($validationResult, $formState);
+      $this->formValidationMapper->mapData($validationResult, $formState);
+    }
 
     // Remove internal values (e.g. add buttons for array elements)
     $formState->unsetValue(self::INTERNAL_VALUES_KEY);
+  }
+
+  /**
+   * @phpstan-return array<int|string, mixed>
+   */
+  public function calculateData(FormStateInterface $formState): array {
+    $validationResult = $this->formValidator->validate($formState);
+
+    return $validationResult->getData();
   }
 
   /**

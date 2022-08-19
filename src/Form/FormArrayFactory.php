@@ -40,6 +40,7 @@ use Drupal\json_forms\Form\Layout\GroupArrayFactory;
 use Drupal\json_forms\Form\Layout\HorizontalLayoutArrayFactory;
 use Drupal\json_forms\Form\Layout\VerticalLayoutArrayFactory;
 use Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory;
+use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
 final class FormArrayFactory implements FormArrayFactoryInterface {
@@ -79,7 +80,12 @@ final class FormArrayFactory implements FormArrayFactoryInterface {
   public function createFormArray(DefinitionInterface $definition, FormStateInterface $formState): array {
     foreach ($this->formArrayFactories as $factory) {
       if ($factory->supportsDefinition($definition)) {
-        return $factory->createFormArray($definition, $formState, $this);
+        $form = $factory->createFormArray($definition, $formState, $this);
+        if ($definition instanceof ControlDefinition) {
+          $formState->set(['form', $definition->getPropertyFormName()], $form);
+        }
+
+        return $form;
       }
     }
 

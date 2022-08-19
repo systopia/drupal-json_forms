@@ -51,7 +51,7 @@ final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterfac
       '#value' => $definition->getLabel(),
       '#validate' => [__CLASS__ . '::onValidate'],
       '#_data' => $definition->getOptionsValue('data'),
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

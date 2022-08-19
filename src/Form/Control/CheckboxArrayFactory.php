@@ -44,7 +44,7 @@ final class CheckboxArrayFactory implements ConcreteFormArrayFactoryInterface {
       '#type' => 'checkbox',
       '#default_value' => FALSE,
       '#return_value' => TRUE,
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
