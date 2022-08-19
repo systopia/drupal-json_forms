@@ -20,6 +20,11 @@
     <exclude name="Drupal.Commenting.FunctionComment.ParamTypeSpaces"/>
     <exclude name="Drupal.Commenting.FunctionComment.ReturnTypeSpaces"/>
     <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
+    <!-- Allow "/** @phpstan-var ... */" -->
+    <exclude name="Drupal.Commenting.InlineComment.DocBlock"/>
+
+    <!-- Don't enforce phpdoc type hint because it (might) only duplicate a PHP type hint -->
+    <exclude name="Drupal.Commenting.FunctionComment.ParamMissingDefinition"/>
 
     <!-- False positive with license header -->
     <exclude name="Drupal.Commenting.FileComment.NamespaceNoFileDoc"/>

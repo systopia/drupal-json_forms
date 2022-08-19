@@ -44,7 +44,7 @@ final class RadiosArrayFactory implements ConcreteFormArrayFactoryInterface {
     return [
       '#type' => 'radio',
       '#options' => OptionsBuilder::buildOptions($definition),
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

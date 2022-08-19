@@ -38,6 +38,8 @@ class ControlDefinition implements DefinitionInterface {
 
   private ?string $scopePrefix;
 
+  private ?string $propertyFormName = NULL;
+
   /**
    * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
    *
@@ -195,6 +197,22 @@ class ControlDefinition implements DefinitionInterface {
    */
   public function getPropertyKeywordValue(string $keyword, $default = NULL) {
     return $this->propertySchema->{$keyword} ?? $default;
+  }
+
+  /**
+   * @return string Value of the attribute "name" in HTML.
+   */
+  public function getPropertyFormName(): string {
+    if (NULL == $this->propertyFormName) {
+      $path = $this->getPropertyPath();
+      $formName = (string) \reset($path);
+      while (FALSE !== ($next = next($path))) {
+        $formName .= '[' . $next . ']';
+      }
+      $this->propertyFormName = $formName;
+    }
+
+    return $this->propertyFormName;
   }
 
   /**

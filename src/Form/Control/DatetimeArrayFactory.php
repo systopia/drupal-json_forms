@@ -42,7 +42,7 @@ final class DatetimeArrayFactory implements ConcreteFormArrayFactoryInterface {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     return [
       '#type' => 'datetime',
-    ] + BasicFormPropertiesFactory::createBasicProperties($definition);
+    ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

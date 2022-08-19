@@ -21,33 +21,48 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Control\Util;
 
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Control\Callbacks\RecalculateCallback;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 
 final class BasicFormPropertiesFactory {
 
   /**
-   * Creates attributes for the properties available in Drupal FormElement.
+   * Creates attributes for properties of elements in Drupal form for a Control.
    *
-   * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
+   * The properties are available in FormElement, and RenderElement used for
+   * layouts.
    *
-   * @return array<string, mixed>
+   * @phpstan-return array<string, mixed>
    */
   public static function createBasicProperties(ControlDefinition $definition): array {
     $form = [
-      '#disabled' => $definition->isReadOnly(),
-      '#required' => $definition->isRequired(),
       '#parents' => $definition->getPropertyPath(),
       '#title' => $definition->getLabel(),
       '#tree' => TRUE,
       '#_scope' => $definition->getFullScope(),
     ];
 
-    if (NULL !== $definition->getDefault()) {
-      $form['#default_value'] = $definition->getDefault();
-    }
-
     if (NULL !== $definition->getDescription()) {
       $form['#description'] = $definition->getDescription();
+    }
+
+    return $form;
+  }
+
+  /**
+   * Creates attributes for properties in Drupal FormElement for a Control.
+   *
+   * @phpstan-return array<string, mixed>
+   */
+  public static function createFieldProperties(ControlDefinition $definition, FormStateInterface $formState): array {
+    $form = [
+      '#disabled' => $definition->isReadOnly(),
+      '#required' => $definition->isRequired(),
+    ];
+
+    if (NULL !== $definition->getDefault()) {
+      $form['#default_value'] = $definition->getDefault();
     }
 
     if (NULL !== $definition->getPrefix()) {
@@ -62,7 +77,16 @@ final class BasicFormPropertiesFactory {
       $form['#value'] = $definition->getConst();
     }
 
-    return $form;
+    if (!$form['#disabled'] && TRUE === $formState->get('recalculateOnChange')) {
+      $form['#ajax'] = [
+        'callback' => RecalculateCallback::class . '::onChange',
+        'event' => 'change',
+        'progress' => [],
+        'disable-refocus' => TRUE,
+      ];
+    }
+
+    return array_merge(static::createBasicProperties($definition), $form);
   }
 
 }
