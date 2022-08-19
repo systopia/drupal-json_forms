@@ -54,6 +54,7 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
     // phpcs:enable
     $form = [
       '#type' => 'fieldset',
+      '#description_display' => 'before',
       '#prefix' => sprintf('<div id="%s">', $fieldsetWrapperId),
       '#suffix' => '</div>',
       'items' => [],
