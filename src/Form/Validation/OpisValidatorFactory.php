@@ -35,7 +35,7 @@ final class OpisValidatorFactory {
       self::$validator = new SystopiaValidator([
         'calculator' => $expressionHandler,
         'evaluator' => $expressionHandler,
-      ]);
+      ], 20);
     }
 
     return self::$validator;
