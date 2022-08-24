@@ -96,6 +96,10 @@ class ControlDefinition implements DefinitionInterface {
     return NULL;
   }
 
+  public function getControlFormat(): ?string {
+    return $this->controlSchema->options->format ?? NULL;
+  }
+
   /**
    * @param string $keyword
    * @param mixed $default
@@ -126,10 +130,6 @@ class ControlDefinition implements DefinitionInterface {
    */
   public function getEnum(): ?array {
     return $this->propertySchema->enum ?? NULL;
-  }
-
-  public function getFormat(): ?string {
-    return $this->controlSchema->options->format ?? NULL;
   }
 
   public function getLabel(): string {

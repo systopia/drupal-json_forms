@@ -49,7 +49,7 @@ final class RadiosArrayFactory implements ConcreteFormArrayFactoryInterface {
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof ControlDefinition && 'string' === $definition->getType()
-      && 'radio' === $definition->getOptionsValue('format');
+      && 'radio' === $definition->getControlFormat();
   }
 
 }

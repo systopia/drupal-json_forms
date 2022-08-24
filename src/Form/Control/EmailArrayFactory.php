@@ -42,7 +42,7 @@ final class EmailArrayFactory extends StringArrayFactory {
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof ControlDefinition && 'string' === $definition->getType()
-      && ('email' === $definition->getFormat() || 'idn-email' === $definition->getFormat());
+      && ('email' === $definition->getPropertyFormat() || 'idn-email' === $definition->getPropertyFormat());
   }
 
 }
