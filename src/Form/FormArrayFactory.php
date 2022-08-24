@@ -27,6 +27,7 @@ use Drupal\json_forms\Form\Control\CheckboxArrayFactory;
 use Drupal\json_forms\Form\Control\DateArrayFactory;
 use Drupal\json_forms\Form\Control\DatetimeArrayFactory;
 use Drupal\json_forms\Form\Control\EmailArrayFactory;
+use Drupal\json_forms\Form\Control\HiddenArrayFactory;
 use Drupal\json_forms\Form\Control\NumberArrayFactory;
 use Drupal\json_forms\Form\Control\ObjectArrayFactory;
 use Drupal\json_forms\Form\Control\RadiosArrayFactory;
@@ -62,6 +63,7 @@ final class FormArrayFactory implements FormArrayFactoryInterface {
       new HorizontalLayoutArrayFactory(),
       new VerticalLayoutArrayFactory(),
       new HtmlMarkupArrayFactory(),
+      new HiddenArrayFactory(),
       new ArrayArrayFactory(),
       new SubmitButtonArrayFactory(),
       new CheckboxArrayFactory(),
