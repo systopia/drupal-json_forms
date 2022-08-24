@@ -47,7 +47,7 @@ final class DateArrayFactory implements ConcreteFormArrayFactoryInterface {
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof ControlDefinition && 'string' === $definition->getType()
-      && 'date' === $definition->getFormat();
+      && 'date' === $definition->getPropertyFormat();
   }
 
 }

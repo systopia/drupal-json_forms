@@ -42,7 +42,7 @@ final class UrlArrayFactory extends StringArrayFactory {
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof ControlDefinition && 'string' === $definition->getType()
-      && ('uri' === $definition->getFormat() || 'uri-reference' === $definition->getFormat());
+      && ('uri' === $definition->getPropertyFormat() || 'uri-reference' === $definition->getPropertyFormat());
   }
 
 }

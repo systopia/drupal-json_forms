@@ -47,7 +47,7 @@ final class DatetimeArrayFactory implements ConcreteFormArrayFactoryInterface {
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof ControlDefinition && 'string' === $definition->getType()
-      && 'date-time' === $definition->getFormat();
+      && 'date-time' === $definition->getPropertyFormat();
   }
 
 }
