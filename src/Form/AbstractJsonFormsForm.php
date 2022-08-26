@@ -132,9 +132,11 @@ abstract class AbstractJsonFormsForm extends FormBase {
    *   only contain keys described in the JSON schema.
    */
   protected function getSubmittedData(FormStateInterface $formState): array {
+    // We cannot use $formState->cleanValues() because it also drops the submit
+    // button value.
     return array_filter(
       $formState->getValues(),
-      fn ($key) => !in_array($key, ['form_build_id', 'form_token', 'form_id'], TRUE),
+      fn ($key) => !in_array($key, $formState->getCleanValueKeys(), TRUE),
       ARRAY_FILTER_USE_KEY
     );
   }
