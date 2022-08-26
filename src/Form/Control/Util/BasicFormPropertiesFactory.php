@@ -59,6 +59,7 @@ final class BasicFormPropertiesFactory {
     $form = [
       '#disabled' => $definition->isReadOnly(),
       '#required' => $definition->isRequired(),
+      '#limit_validation_errors' => [],
     ];
 
     if (NULL !== $definition->getDefault()) {

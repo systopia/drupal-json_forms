@@ -50,6 +50,8 @@ final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterfac
       '#type' => 'submit',
       '#value' => $definition->getLabel(),
       '#validate' => [__CLASS__ . '::onValidate'],
+      // Override value set in BasicFormPropertiesFactory.
+      '#limit_validation_errors' => NULL,
       '#_data' => $definition->getOptionsValue('data'),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
