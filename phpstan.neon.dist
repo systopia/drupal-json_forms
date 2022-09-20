@@ -22,6 +22,8 @@ parameters:
 	ignoreErrors:
 		# Note paths are prefixed with ""*/" to wirk with inspections in PHPStorm because of:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
+		# Wrong phpdoc type hint in Drupal
+		- '/^Parameter #1 \$key of method Drupal\\Core\\Form\\FormStateInterface::hasTemporaryValue\(\) expects string, array<int\|string> given.$/'
 		- '#^Method Drupal\\Core\\Form\\FormBuilderInterface::getForm\(\) invoked with \d+ parameters, 1 required.$#'
 		- '/^Parameter #1 \$form \(array<int\|string, mixed>\) of method [^\s]+::(build|validate|submit)Form\(\) should be contravariant with parameter \$form \(array\) of method Drupal\\Core\\Form\\(FormInterface|FormBase)::(build|validate|submit)Form\(\)$/'
 		-

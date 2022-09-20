@@ -62,7 +62,11 @@ final class BasicFormPropertiesFactory {
       '#limit_validation_errors' => [],
     ];
 
-    if (NULL !== $definition->getDefault()) {
+    if ((!$formState->isCached() || $definition->isReadOnly())
+      && $formState->hasTemporaryValue($definition->getPropertyPath())) {
+      $form['#default_value'] = $formState->getTemporaryValue($definition->getPropertyPath());
+    }
+    elseif (NULL !== $definition->getDefault()) {
       $form['#default_value'] = $definition->getDefault();
     }
 

@@ -42,6 +42,14 @@ final class ArrayCallbacks {
     Assertion::integer($numItems);
     $propertyAccessor->setProperty('numItems', $numItems + 1);
 
+    // Calculation is required for calculated data to be still set because
+    // calculated values are not part of the POSTed data since they are marked
+    // as disabled.
+    /** @var \Drupal\json_forms\Form\AbstractJsonFormsForm $formObject */
+    $formObject = $formState->getFormObject();
+    $data = $formObject->calculateData($formState);
+    $formState->setTemporary($data);
+
     $formState->setRebuild();
   }
 
@@ -55,7 +63,7 @@ final class ArrayCallbacks {
     $triggeringElement = $formState->getTriggeringElement();
     Assertion::isArray($triggeringElement);
 
-    return static::getArrayForm($form, $triggeringElement);
+    return self::getArrayForm($form, $triggeringElement);
   }
 
   /**
@@ -71,10 +79,8 @@ final class ArrayCallbacks {
     Assertion::keyExists($triggeringElement, '#_controlPropertyPath');
     $propertyPath = $triggeringElement['#_controlPropertyPath'];
 
-    $propertyAccessor = FormStatePropertyAccessor::create($formState, $propertyPath);
-    $arrayItems = $propertyAccessor->getProperty('newItems');
     $arrayForm = &self::getArrayForm($form, $triggeringElement);
-    FormValueAccessor::setValue($arrayForm['items'], $propertyPath, $arrayItems);
+    FormValueAccessor::setValue($arrayForm['items'], $propertyPath, $formState->getTemporaryValue($propertyPath));
 
     return $arrayForm;
   }
@@ -87,7 +93,7 @@ final class ArrayCallbacks {
     /*
      * Changing values in $form and $formState has no effect in validation
      * callback, though the last array item is not available in the ajax
-     * callback, anymore. So we use properties and change the values in
+     * callback, anymore. So we use temporary values and change the values in
      * ajaxRemove(). The used approach ensures that the resulting array has
      * contiguous indexes and thus will be treated as array in JSON, not as
      * object.
@@ -106,7 +112,15 @@ final class ArrayCallbacks {
     Assertion::isArray($arrayItems);
     unset($arrayItems[$indexToRemove]);
     $arrayItems = array_values($arrayItems);
-    $propertyAccessor->setProperty('newItems', $arrayItems);
+
+    // Calculation is required for calculated data to be still set because
+    // calculated values are not part of the POSTed data since they are marked
+    // as disabled.
+    $formState->setValue($propertyPath, $arrayItems);
+    /** @var \Drupal\json_forms\Form\AbstractJsonFormsForm $formObject */
+    $formObject = $formState->getFormObject();
+    $data = $formObject->calculateData($formState);
+    $formState->setTemporary($data);
 
     $numItems = $propertyAccessor->getProperty('numItems');
     Assertion::integer($numItems);
