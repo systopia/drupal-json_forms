@@ -83,6 +83,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       '#parents' => ['test', 'foo'],
       '#title' => 'Foo',
       '#tree' => TRUE,
+      '#limit_validation_errors' => [],
       '#_scope' => '#/properties/test/properties/foo',
     ];
     static::assertEquals($expected, $form);
@@ -129,6 +130,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       '#description' => 'Test description',
       // phpcs:enable
       '#tree' => TRUE,
+      '#limit_validation_errors' => [],
       '#_scope' => '#/properties/test/properties/foo',
     ];
     static::assertEquals($expected, $form);
