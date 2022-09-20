@@ -69,6 +69,9 @@ abstract class AbstractJsonFormsForm extends FormBase {
   /**
    * @inheritDoc
    *
+   * To build a form with existing data, set the data as temporary in the form
+   * state until the form state is cached (but not later).
+   *
    * @param array<int|string, mixed> $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   Note: Using underscore case is enforced by Drupal's argument resolver.
@@ -78,6 +81,9 @@ abstract class AbstractJsonFormsForm extends FormBase {
    * @return array<int|string, mixed>
    *
    * @throws \InvalidArgumentException
+   *
+   * @see FormStateInterface::setTemporary()
+   * @see FormStateInterface::isCached()
    */
   public function buildForm(array $form,
     FormStateInterface $form_state,

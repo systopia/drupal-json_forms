@@ -61,8 +61,15 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
     ] + BasicFormPropertiesFactory::createBasicProperties($definition);
 
     $propertyAccessor = FormStatePropertyAccessor::create($formState, $definition->getPropertyPath());
-    $numItems = $propertyAccessor->getOrSetProperty('numItems', $definition->getMinItems() ?? 0);
-    Assertion::integer($numItems);
+    $numItems = $propertyAccessor->getProperty('numItems');
+    if (NULL === $numItems) {
+      $items = $formState->getTemporaryValue($definition->getPropertyPath());
+      $numItems = is_array($items) ? count($items) : ($definition->getMinItems() ?? 0);
+      $propertyAccessor->setProperty('numItems', $numItems);
+    }
+    else {
+      Assertion::integer($numItems);
+    }
 
     $callbackParentsPrefix = array_merge([AbstractJsonFormsForm::INTERNAL_VALUES_KEY], $definition->getPropertyPath());
 
