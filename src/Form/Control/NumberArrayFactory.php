@@ -68,6 +68,9 @@ final class NumberArrayFactory implements ConcreteFormArrayFactoryInterface {
     if (NULL !== $definition->getPrecision()) {
       $form['#step'] = 1 / (10 ** $definition->getPrecision());
     }
+    else {
+      $form['#step'] = 'any';
+    }
 
     return $form;
   }
