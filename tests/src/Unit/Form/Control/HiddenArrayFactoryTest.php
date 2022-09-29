@@ -72,7 +72,7 @@ final class HiddenArrayFactoryTest extends TestCase {
       ],
     ];
 
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
 
     static::assertSame('hidden', $form['#type']);
@@ -98,15 +98,15 @@ final class HiddenArrayFactoryTest extends TestCase {
       'options' => (object) ['type' => 'hidden'],
     ];
 
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $uiSchema->options->type = 'test';
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     static::assertFalse($this->factory->supportsDefinition($definition));
 
     unset($uiSchema->options);
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     static::assertFalse($this->factory->supportsDefinition($definition));
   }
 

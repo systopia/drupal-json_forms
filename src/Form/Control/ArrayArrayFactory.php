@@ -90,40 +90,44 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
           $formState
         );
 
-        // Add remove button to item.
-        $form['items'][$i]['__remove'] = [
-          '#type' => 'button',
-          '#value' => 'x',
-          '#name' => $definition->getFullScope() . '_remove_' . $i,
-          '#limit_validation_errors' => TRUE,
-          '#validate' => [ArrayCallbacks::class . '::removeItem'],
-          '#submit' => [],
-          '#ajax' => [
-            'callback' => ArrayCallbacks::class . '::ajaxRemove',
-            'wrapper' => $fieldsetWrapperId,
-          ],
-          '#parents' => array_merge($callbackParentsPrefix, [$i, 'remove']),
-          '#tree' => TRUE,
-          '#_controlPropertyPath' => $definition->getPropertyPath(),
-        ];
+        if (!$definition->isReadOnly()) {
+          // Add remove button to item.
+          $form['items'][$i]['__remove'] = [
+            '#type' => 'button',
+            '#value' => 'x',
+            '#name' => $definition->getFullScope() . '_remove_' . $i,
+            '#limit_validation_errors' => TRUE,
+            '#validate' => [ArrayCallbacks::class . '::removeItem'],
+            '#submit' => [],
+            '#ajax' => [
+              'callback' => ArrayCallbacks::class . '::ajaxRemove',
+              'wrapper' => $fieldsetWrapperId,
+            ],
+            '#parents' => array_merge($callbackParentsPrefix, [$i, 'remove']),
+            '#tree' => TRUE,
+            '#_controlPropertyPath' => $definition->getPropertyPath(),
+          ];
+        }
       }
     }
 
-    $form['__add'] = [
-      '#type' => 'button',
-      '#value' => '+',
-      '#limit_validation_errors' => TRUE,
-      '#validate' => [ArrayCallbacks::class . '::addItem'],
-      '#submit' => [],
-      '#ajax' => [
-        'callback' => ArrayCallbacks::class . '::ajaxAdd',
-        'wrapper' => $fieldsetWrapperId,
-      ],
-      '#parents' => array_merge($callbackParentsPrefix, ['add']),
-      '#tree' => TRUE,
-      '#name' => $definition->getFullScope() . '_add',
-      '#_controlPropertyPath' => $definition->getPropertyPath(),
-    ];
+    if (!$definition->isReadOnly()) {
+      $form['__add'] = [
+        '#type' => 'button',
+        '#value' => '+',
+        '#limit_validation_errors' => TRUE,
+        '#validate' => [ArrayCallbacks::class . '::addItem'],
+        '#submit' => [],
+        '#ajax' => [
+          'callback' => ArrayCallbacks::class . '::ajaxAdd',
+          'wrapper' => $fieldsetWrapperId,
+        ],
+        '#parents' => array_merge($callbackParentsPrefix, ['add']),
+        '#tree' => TRUE,
+        '#name' => $definition->getFullScope() . '_add',
+        '#_controlPropertyPath' => $definition->getPropertyPath(),
+      ];
+    }
 
     return $form;
   }
@@ -150,7 +154,7 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
       $arrayUiSchema->elements = $this->createElementSchemas($items);
     }
 
-    return new LayoutDefinition($arrayUiSchema, $items);
+    return new LayoutDefinition($arrayUiSchema, $items, $definition->isUiReadonly());
   }
 
   /**
