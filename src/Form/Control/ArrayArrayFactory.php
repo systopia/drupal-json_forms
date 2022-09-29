@@ -94,6 +94,7 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
           // Add remove button to item.
           $form['items'][$i]['__remove'] = [
             '#type' => 'button',
+            '#disabled' => NULL !== $definition->getMinItems() && $numItems <= $definition->getMinItems(),
             '#value' => 'x',
             '#name' => $definition->getFullScope() . '_remove_' . $i,
             '#limit_validation_errors' => TRUE,
@@ -114,6 +115,7 @@ final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
     if (!$definition->isReadOnly()) {
       $form['__add'] = [
         '#type' => 'button',
+        '#disabled' => NULL !== $definition->getMaxItems() && $numItems >= $definition->getMaxItems(),
         '#value' => '+',
         '#limit_validation_errors' => TRUE,
         '#validate' => [ArrayCallbacks::class . '::addItem'],
