@@ -45,7 +45,11 @@ final class ObjectArrayFactory implements ConcreteFormArrayFactoryInterface {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ObjectControlDefinition $definition */
 
     $layoutSchema = $this->createLayoutSchema($definition);
-    $layoutDefinition = new LayoutDefinition($layoutSchema, $definition->getPropertySchema());
+    $layoutDefinition = new LayoutDefinition(
+      $layoutSchema,
+      $definition->getPropertySchema(),
+      $definition->isUiReadonly()
+    );
 
     return $formArrayFactory->createFormArray($layoutDefinition, $formState);
   }

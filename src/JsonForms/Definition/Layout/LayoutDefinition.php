@@ -33,13 +33,16 @@ class LayoutDefinition implements DefinitionInterface {
    */
   private array $elements = [];
 
+  private bool $parentUiReadonly;
+
   /**
    * @throws \InvalidArgumentException
    */
-  public function __construct(\stdClass $layoutSchema, \stdClass $jsonSchema) {
+  public function __construct(\stdClass $layoutSchema, \stdClass $jsonSchema, bool $parentUiReadonly) {
     $this->layoutSchema = $layoutSchema;
+    $this->parentUiReadonly = $parentUiReadonly;
     foreach ($this->layoutSchema->elements as $element) {
-      $this->elements[] = DefinitionFactory::createDefinition($element, $jsonSchema);
+      $this->elements[] = DefinitionFactory::createDefinition($element, $jsonSchema, $this->isReadonly());
     }
   }
 
@@ -66,6 +69,10 @@ class LayoutDefinition implements DefinitionInterface {
 
   public function getType(): string {
     return $this->layoutSchema->type;
+  }
+
+  public function isReadonly(): bool {
+    return $this->layoutSchema->options->readonly ?? $this->parentUiReadonly;
   }
 
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {

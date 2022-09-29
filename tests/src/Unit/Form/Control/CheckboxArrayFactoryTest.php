@@ -71,7 +71,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       'scope' => '#/properties/test/properties/foo',
     ];
 
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
 
     $expected = [
@@ -115,7 +115,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       ],
     ];
 
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
 
     $expected = [
@@ -151,11 +151,11 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       'scope' => '#/properties/test',
     ];
 
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $jsonSchema->properties->test->type = 'string';
-    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
     static::assertFalse($this->factory->supportsDefinition($definition));
   }
 

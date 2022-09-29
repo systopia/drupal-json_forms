@@ -34,11 +34,13 @@ class ControlDefinition implements DefinitionInterface {
 
   protected \stdClass $objectSchema;
 
+  private bool $parentUiReadonly;
+
+  private ?string $propertyFormName = NULL;
+
   protected \stdClass $propertySchema;
 
   private ?string $scopePrefix;
-
-  private ?string $propertyFormName = NULL;
 
   /**
    * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
@@ -46,7 +48,12 @@ class ControlDefinition implements DefinitionInterface {
    * @return static
    */
   public static function fromDefinition(ControlDefinition $definition): self {
-    return new static($definition->getControlSchema(), $definition->getObjectSchema(), $definition->getScopePrefix());
+    return new static(
+      $definition->controlSchema,
+      $definition->objectSchema,
+      $definition->parentUiReadonly,
+      $definition->scopePrefix
+    );
   }
 
   /**
@@ -57,7 +64,7 @@ class ControlDefinition implements DefinitionInterface {
    *
    * @throws \InvalidArgumentException
    */
-  public static function fromJsonSchema(\stdClass $controlSchema, \stdClass $jsonSchema): self {
+  public static function fromJsonSchema(\stdClass $controlSchema, \stdClass $jsonSchema, bool $parentUiReadonly): self {
     if ('#/' === $controlSchema->scope) {
       $objectSchema = (object) [
         'properties' => (object) [
@@ -70,13 +77,19 @@ class ControlDefinition implements DefinitionInterface {
       $objectSchema = $objectPointer->getSchema($jsonSchema);
     }
 
-    return new static($controlSchema, $objectSchema);
+    return new static($controlSchema, $objectSchema, $parentUiReadonly);
   }
 
-  public function __construct(\stdClass $controlSchema, \stdClass $objectSchema, ?string $scopePrefix = NULL) {
+  public function __construct(
+    \stdClass $controlSchema,
+    \stdClass $objectSchema,
+    bool $parentUiReadonly,
+    ?string $scopePrefix = NULL
+  ) {
     $this->controlSchema = $controlSchema;
     $this->objectSchema = $objectSchema;
     $this->propertySchema = $this->objectSchema->properties->{$this->getPropertyName()};
+    $this->parentUiReadonly = $parentUiReadonly;
     $this->scopePrefix = $scopePrefix;
   }
 
@@ -255,7 +268,16 @@ class ControlDefinition implements DefinitionInterface {
 
   public function isReadOnly(): bool {
     return $this->controlSchema->options->readonly ?? $this->propertySchema->readOnly
-      ?? property_exists($this->propertySchema, '$calculate');
+      ?? (property_exists($this->propertySchema, '$calculate') || $this->parentUiReadonly);
+  }
+
+  /**
+   * @return bool
+   *   TRUE if the control schema is marked readonly or its parent UI element,
+   *   FALSE otherwise.
+   */
+  public function isUiReadonly(): bool {
+    return $this->controlSchema->options->readonly ?? $this->parentUiReadonly;
   }
 
   public function isRequired(): bool {
@@ -267,7 +289,7 @@ class ControlDefinition implements DefinitionInterface {
       $scopePrefix = $this->getScopePrefix() . ltrim($scopePrefix, '#');
     }
 
-    return new static($this->controlSchema, $this->objectSchema, $scopePrefix);
+    return new static($this->controlSchema, $this->objectSchema, $this->parentUiReadonly, $scopePrefix);
   }
 
 }

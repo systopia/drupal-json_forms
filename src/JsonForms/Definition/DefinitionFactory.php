@@ -30,16 +30,20 @@ final class DefinitionFactory {
   /**
    * @throws \InvalidArgumentException
    */
-  public static function createDefinition(\stdClass $uiSchema, \stdClass $jsonSchema): DefinitionInterface {
+  public static function createDefinition(
+    \stdClass $uiSchema,
+    \stdClass $jsonSchema,
+    bool $parentUiReadonly = FALSE
+  ): DefinitionInterface {
     if ('Control' === $uiSchema->type) {
-      return ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema);
+      return ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, $parentUiReadonly);
     }
     elseif ('Markup' === $uiSchema->type) {
       return new MarkupDefinition($uiSchema);
     }
 
     if (property_exists($uiSchema, 'elements')) {
-      return new LayoutDefinition($uiSchema, $jsonSchema);
+      return new LayoutDefinition($uiSchema, $jsonSchema, $parentUiReadonly);
     }
 
     throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $uiSchema->type));
