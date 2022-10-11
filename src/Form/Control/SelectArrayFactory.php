@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\Control\Callbacks\NumberValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -41,14 +42,22 @@ final class SelectArrayFactory implements ConcreteFormArrayFactoryInterface {
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
-    return [
+    $form = [
       '#type' => 'select',
       '#options' => OptionsBuilder::buildOptions($definition),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    if ($definition->getType() === 'number' || $definition->getType() === 'integer') {
+      $form['#value_callback'] = NumberValueCallback::class . '::convert';
+      $form['#_type'] = $definition->getType();
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
-    return $definition instanceof ControlDefinition && 'string' === $definition->getType()
+    return $definition instanceof ControlDefinition
+      && in_array($definition->getType(), ['string', 'number', 'integer'], TRUE)
       && (NULL !== $definition->getEnum() || NULL !== $definition->getOneOf());
   }
 
