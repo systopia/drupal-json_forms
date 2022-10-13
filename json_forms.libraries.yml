@@ -1,0 +1,10 @@
+confirm:
+  version: VERSION
+  js:
+    js/confirm.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.dialog
+    - core/jquery
+    - core/once
