@@ -23,6 +23,7 @@ namespace Drupal\json_forms\Form\Control;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -36,6 +37,10 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
  */
 final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterface {
 
+  use StringTranslationTrait;
+
+  private static int $confirmCount = 0;
+
   /**
    * @inheritDoc
    */
@@ -46,7 +51,7 @@ final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterfac
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
 
-    return [
+    $form = [
       '#type' => 'submit',
       '#value' => $definition->getLabel(),
       '#validate' => [__CLASS__ . '::onValidate'],
@@ -54,6 +59,20 @@ final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterfac
       '#limit_validation_errors' => NULL,
       '#_data' => $definition->getOptionsValue('data'),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    if (NULL !== $definition->getOptionsValue('confirm')) {
+      // @phpstan-ignore-next-line
+      $form['#attached']['library'][] = 'json_forms/confirm';
+      $class = 'json-forms-confirm-' . self::$confirmCount++;
+      // @phpstan-ignore-next-line
+      $form['#attributes']['class'][] = $class;
+      // @phpstan-ignore-next-line
+      $form['#attached']['drupalSettings']['jsonFormsConfirm'][$class] = [
+        'text' => $definition->getOptionsValue('confirm'),
+      ];
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
