@@ -29,6 +29,8 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
  */
 interface ConcreteFormArrayFactoryInterface {
 
+  public static function getPriority(): int;
+
   /**
    * @return array<int|string, mixed>
    *

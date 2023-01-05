@@ -23,14 +23,14 @@ namespace Drupal\json_forms\Form\Control;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\StringControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
-class StringArrayFactory implements ConcreteFormArrayFactoryInterface {
+class StringArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * @inheritDoc

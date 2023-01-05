@@ -22,11 +22,23 @@ declare(strict_types=1);
 namespace Drupal\json_forms;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\DependencyInjection\ServiceModifierInterface;
+use Drupal\Core\DependencyInjection\ServiceProviderInterface;
+use Drupal\json_forms\DependencyInjection\Compiler\ConcreteFormArrayFactoryPass;
+use Drupal\json_forms\Form\Util\FactoryRegistrator;
 
-final class JsonFormsServiceProvider implements ServiceModifierInterface {
+/**
+ * @codeCoverageIgnore
+ */
+final class JsonFormsServiceProvider implements ServiceProviderInterface {
 
-  public function alter(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container): void {
+    $container->addCompilerPass(new ConcreteFormArrayFactoryPass());
+
+    FactoryRegistrator::registerFactories(
+      $container,
+      __DIR__ . '/Form',
+      'Drupal\\json_forms\\Form'
+    );
   }
 
 }

@@ -23,8 +23,8 @@ namespace Drupal\json_forms\Form\Control;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\AbstractJsonFormsForm;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
 use Drupal\json_forms\Form\Control\Callbacks\ArrayCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -34,7 +34,7 @@ use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
-final class ArrayArrayFactory implements ConcreteFormArrayFactoryInterface {
+final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * @inheritDoc

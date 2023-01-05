@@ -22,25 +22,6 @@ declare(strict_types=1);
 namespace Drupal\json_forms\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_forms\Form\Control\ArrayArrayFactory;
-use Drupal\json_forms\Form\Control\CheckboxArrayFactory;
-use Drupal\json_forms\Form\Control\DateArrayFactory;
-use Drupal\json_forms\Form\Control\DatetimeArrayFactory;
-use Drupal\json_forms\Form\Control\EmailArrayFactory;
-use Drupal\json_forms\Form\Control\HiddenArrayFactory;
-use Drupal\json_forms\Form\Control\NumberArrayFactory;
-use Drupal\json_forms\Form\Control\ObjectArrayFactory;
-use Drupal\json_forms\Form\Control\RadiosArrayFactory;
-use Drupal\json_forms\Form\Control\SelectArrayFactory;
-use Drupal\json_forms\Form\Control\StringArrayFactory;
-use Drupal\json_forms\Form\Control\SubmitButtonArrayFactory;
-use Drupal\json_forms\Form\Control\UrlArrayFactory;
-use Drupal\json_forms\Form\Layout\CategorizationArrayFactory;
-use Drupal\json_forms\Form\Layout\CategoryArrayFactory;
-use Drupal\json_forms\Form\Layout\GroupArrayFactory;
-use Drupal\json_forms\Form\Layout\HorizontalLayoutArrayFactory;
-use Drupal\json_forms\Form\Layout\VerticalLayoutArrayFactory;
-use Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
@@ -55,28 +36,7 @@ final class FormArrayFactory implements FormArrayFactoryInterface {
    * @param ConcreteFormArrayFactoryInterface ...$formArrayFactories
    */
   public function __construct(ConcreteFormArrayFactoryInterface ...$formArrayFactories) {
-    // @todo Use tagged services and dependency injection
-    $this->formArrayFactories = array_merge($formArrayFactories, [
-      new CategorizationArrayFactory(),
-      new CategoryArrayFactory(),
-      new GroupArrayFactory(),
-      new HorizontalLayoutArrayFactory(),
-      new VerticalLayoutArrayFactory(),
-      new HtmlMarkupArrayFactory(),
-      new HiddenArrayFactory(),
-      new ArrayArrayFactory(),
-      new SubmitButtonArrayFactory(),
-      new CheckboxArrayFactory(),
-      new DateArrayFactory(),
-      new DatetimeArrayFactory(),
-      new EmailArrayFactory(),
-      new RadiosArrayFactory(),
-      new SelectArrayFactory(),
-      new NumberArrayFactory(),
-      new UrlArrayFactory(),
-      new StringArrayFactory(),
-      new ObjectArrayFactory(),
-    ]);
+    $this->formArrayFactories = $formArrayFactories;
   }
 
   public function createFormArray(DefinitionInterface $definition, FormStateInterface $formState): array {
