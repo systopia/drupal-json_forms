@@ -28,6 +28,10 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
 final class UrlArrayFactory extends StringArrayFactory {
 
+  public static function getPriority(): int {
+    return StringArrayFactory::getPriority() + 1;
+  }
+
   /**
    * @inheritDoc
    */

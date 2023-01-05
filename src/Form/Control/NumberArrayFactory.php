@@ -23,7 +23,7 @@ namespace Drupal\json_forms\Form\Control;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Callbacks\NumberValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -31,7 +31,7 @@ use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\NumberControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
-final class NumberArrayFactory implements ConcreteFormArrayFactoryInterface {
+final class NumberArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * @inheritDoc

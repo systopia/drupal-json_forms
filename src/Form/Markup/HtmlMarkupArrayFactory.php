@@ -23,12 +23,12 @@ namespace Drupal\json_forms\Form\Markup;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
-final class HtmlMarkupArrayFactory implements ConcreteFormArrayFactoryInterface {
+final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * @inheritDoc

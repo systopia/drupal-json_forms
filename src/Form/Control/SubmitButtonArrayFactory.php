@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -35,11 +35,15 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
  *
  * This is a custom JSONForms extension.
  */
-final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterface {
+final class SubmitButtonArrayFactory extends AbstractConcreteFormArrayFactory {
 
   use StringTranslationTrait;
 
   private static int $confirmCount = 0;
+
+  public static function getPriority(): int {
+    return SelectArrayFactory::getPriority() + 1;
+  }
 
   /**
    * @inheritDoc
@@ -80,7 +84,7 @@ final class SubmitButtonArrayFactory implements ConcreteFormArrayFactoryInterfac
   }
 
   /**
-   * @param array <int|string, mixed> $form
+   * @param array<int|string, mixed> $form
    * @param \Drupal\Core\Form\FormStateInterface $formState
    */
   public static function onValidate(array &$form, FormStateInterface $formState): void {

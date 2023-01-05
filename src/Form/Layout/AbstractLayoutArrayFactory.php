@@ -23,13 +23,13 @@ namespace Drupal\json_forms\Form\Layout;
 
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_forms\Form\ConcreteFormArrayFactoryInterface;
+use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
-abstract class AbstractLayoutArrayFactory implements ConcreteFormArrayFactoryInterface {
+abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * @inheritDoc
