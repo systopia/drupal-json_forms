@@ -42,6 +42,7 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
 
     return [
       '#type' => 'item',
+      '#title' => $definition->getLabel(),
       '#markup' => $definition->getContent(),
     ];
   }
