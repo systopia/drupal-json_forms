@@ -56,14 +56,16 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       'type' => 'Markup',
       'contentMediaType' => 'text/html',
       'content' => '<em>test</em>',
+      'label' => 'Label',
     ];
 
     $definition = new MarkupDefinition($uiSchema);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
-    static::assertSame([
+    static::assertEquals([
       '#type' => 'item',
+      '#title' => 'Label',
       '#markup' => '<em>test</em>',
     ], $form);
   }
@@ -73,6 +75,7 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       'type' => 'Markup',
       'contentMediaType' => 'text/markdown',
       'content' => '*test*',
+      'label' => 'Label',
     ];
 
     $definition = new MarkupDefinition($uiSchema);

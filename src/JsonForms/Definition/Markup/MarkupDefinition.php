@@ -59,6 +59,10 @@ final class MarkupDefinition implements DefinitionInterface {
     return $this->markupSchema->{$keyword} ?? $default;
   }
 
+  public function getLabel(): ?string {
+    return $this->markupSchema->label ?? NULL;
+  }
+
   public function getMarkupSchema(): \stdClass {
     return $this->markupSchema;
   }
