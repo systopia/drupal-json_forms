@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form;
 use Assert\Assertion;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Util\FormCallbackExecutor;
 use Drupal\json_forms\Form\Validation\FormValidationMapperInterface;
 use Drupal\json_forms\Form\Validation\FormValidatorInterface;
 use Drupal\json_forms\JsonForms\Definition\DefinitionFactory;
@@ -114,6 +115,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $formState): void {
     if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
       parent::validateForm($form, $formState);
+      FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
       $validationResult = $this->formValidator->validate($formState);
       $this->formValidationMapper->mapErrors($validationResult, $formState);
       $this->formValidationMapper->mapData($validationResult, $formState);
