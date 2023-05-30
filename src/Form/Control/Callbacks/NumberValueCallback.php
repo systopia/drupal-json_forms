@@ -34,7 +34,14 @@ final class NumberValueCallback {
    */
   public static function convert(array $element, $input, FormStateInterface $formState) {
     if (FALSE === $input || '' === $input) {
-      return $element['#default_value'] ?? NULL;
+      $value = $element['#default_value'] ?? NULL;
+      if (NULL === $value) {
+        // Prevent empty string as value. Drupal sets an empty string in this
+        // case if no value is set in the form state.
+        $formState->setValueForElement($element, NULL);
+      }
+
+      return $value;
     }
 
     if ('integer' === $element['#_type'] && static::isIntegerish($input)) {
