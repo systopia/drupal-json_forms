@@ -33,7 +33,7 @@ final class EmailArrayFactory extends StringArrayFactory {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,

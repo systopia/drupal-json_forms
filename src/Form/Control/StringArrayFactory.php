@@ -33,7 +33,7 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 class StringArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,

@@ -32,7 +32,7 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 final class CheckboxArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,

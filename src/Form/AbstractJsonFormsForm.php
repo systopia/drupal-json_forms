@@ -48,7 +48,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
   protected FormValidationMapperInterface $formValidationMapper;
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    *
    * @return static
    */
@@ -67,7 +67,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    *
    * To build a form with existing data, set the data as temporary in the form
    * state until the form state is cached (but not later).

@@ -27,14 +27,14 @@ use Drupal\json_forms\Form\AbstractJsonFormsForm;
 final class JsonFormsExampleForm extends AbstractJsonFormsForm {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function getFormId(): string {
     return 'json_forms_example';
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    *
    * @param array<int|string, mixed> $form
    * @param \Drupal\Core\Form\FormStateInterface $formState
