@@ -44,9 +44,19 @@ final class DateArrayFactory extends AbstractConcreteFormArrayFactory {
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
-    return [
+    $form = [
       '#type' => 'date',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    // @phpstan-ignore-next-line
+    if ('change' === ($form['#ajax']['event'] ?? NULL)) {
+      // For input fields of type "date" the "change" event is triggered while
+      // entering a value, so we have to use "blur" instead.
+      // @phpstan-ignore-next-line
+      $form['#ajax']['event'] = 'blur';
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
