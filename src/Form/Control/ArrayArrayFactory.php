@@ -37,7 +37,7 @@ use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,

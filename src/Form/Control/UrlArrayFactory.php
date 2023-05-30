@@ -33,7 +33,7 @@ final class UrlArrayFactory extends StringArrayFactory {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,

@@ -31,7 +31,7 @@ use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function createFormArray(DefinitionInterface $definition,
     FormStateInterface $formState,
