@@ -88,9 +88,21 @@ class ControlDefinition implements DefinitionInterface {
   ) {
     $this->controlSchema = $controlSchema;
     $this->objectSchema = $objectSchema;
-    $this->propertySchema = $this->objectSchema->properties->{$this->getPropertyName()};
     $this->parentUiReadonly = $parentUiReadonly;
     $this->scopePrefix = $scopePrefix;
+    $propertySchema = $this->objectSchema->properties->{$this->getPropertyName()};
+    Assertion::notNull(
+      $propertySchema,
+      sprintf('Property schema for "%s" is missing.', $this->getFullScope()),
+      $this->getFullScope()
+    );
+    Assertion::isInstanceOf(
+      $propertySchema,
+      \stdClass::class,
+      sprintf('Property schema for "%s" is invalid.', $this->getFullScope()),
+      $this->getFullScope()
+    );
+    $this->propertySchema = $propertySchema;
   }
 
   /**
