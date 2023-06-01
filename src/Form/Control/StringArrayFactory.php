@@ -45,7 +45,7 @@ class StringArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\StringControlDefinition $definition */
 
     $form = [
-      '#type' => 'textfield',
+      '#type' => TRUE === $definition->getOptionsValue('multi', FALSE) ? 'textarea' : 'textfield',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getMaxLength()) {
