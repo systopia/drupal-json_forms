@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Callbacks\CheckboxValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -42,8 +43,7 @@ final class CheckboxArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     return [
       '#type' => 'checkbox',
-      '#default_value' => FALSE,
-      '#return_value' => TRUE,
+      '#value_callback' => CheckboxValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
 
