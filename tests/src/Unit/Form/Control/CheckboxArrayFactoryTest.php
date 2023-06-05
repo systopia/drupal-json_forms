@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\json_forms\Unit\Form\Control;
 
 use Drupal\Core\Form\FormState;
+use Drupal\json_forms\Form\Control\Callbacks\CheckboxValueCallback;
 use Drupal\json_forms\Form\Control\CheckboxArrayFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -76,8 +77,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
 
     $expected = [
       '#type' => 'checkbox',
-      '#default_value' => FALSE,
-      '#return_value' => TRUE,
+      '#value_callback' => CheckboxValueCallback::class . '::convert',
       '#disabled' => FALSE,
       '#required' => FALSE,
       '#parents' => ['test', 'foo'],
@@ -120,8 +120,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
 
     $expected = [
       '#type' => 'checkbox',
-      '#default_value' => FALSE,
-      '#return_value' => TRUE,
+      '#value_callback' => CheckboxValueCallback::class . '::convert',
       '#disabled' => TRUE,
       '#required' => TRUE,
       '#parents' => ['test', 'foo'],
