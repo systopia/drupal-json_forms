@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms_example\Form;
 
+use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractJsonFormsForm;
 
@@ -31,6 +32,33 @@ final class JsonFormsExampleForm extends AbstractJsonFormsForm {
    */
   public function getFormId(): string {
     return 'json_forms_example';
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param array<int|string, mixed> $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Note: Using underscore case is enforced by Drupal's argument resolver.
+   * @param \stdClass $jsonSchema
+   * @param \stdClass $uiSchema
+   * @param int $flags
+   *
+   * @return array<int|string, mixed>
+   *
+   * @throws \InvalidArgumentException
+   */
+  public function buildForm(
+    array $form,
+    FormStateInterface $form_state,
+    \stdClass $jsonSchema = NULL,
+    \stdClass $uiSchema = NULL,
+    int $flags = 0
+  ): array {
+    Assertion::notNull($jsonSchema);
+    Assertion::notNull($uiSchema);
+
+    return $this->buildJsonFormsForm($form, $form_state, $jsonSchema, $uiSchema, $flags);
   }
 
   /**
