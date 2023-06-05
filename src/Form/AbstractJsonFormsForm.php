@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form;
 
-use Assert\Assertion;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Util\FormCallbackExecutor;
@@ -31,10 +30,17 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Base class for JSON Forms.
+ *
+ * Subclasses should return the result of buildJsonFormsForm() in their
+ * implementation of buildForm().
+ *
  * @phpstan-consistent-constructor
  *
  * Note: Properties must not be private, otherwise they get lost when form state
  * is recovered from cache: https://www.drupal.org/project/drupal/issues/3097143
+ *
+ * @see self::buildJsonFormsForm()
  */
 abstract class AbstractJsonFormsForm extends FormBase {
 
@@ -68,36 +74,34 @@ abstract class AbstractJsonFormsForm extends FormBase {
   }
 
   /**
-   * {@inheritDoc}
+   * Subclasses should call this method in their implementation of buildForm().
    *
    * To build a form with existing data, set the data as temporary in the form
    * state until the form state is cached (but not later).
    *
    * @param array<int|string, mixed> $form
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Note: Using underscore case is enforced by Drupal's argument resolver.
+   * @param \Drupal\Core\Form\FormStateInterface $formState
    * @param \stdClass $jsonSchema
    * @param \stdClass $uiSchema
    *
    * @return array<int|string, mixed>
+   *   Should be used as return value of buildForms().
    *
    * @throws \InvalidArgumentException
    *
+   * @see \Drupal\Core\Form\FormInterface::buildForm()
    * @see FormStateInterface::setTemporary()
    * @see FormStateInterface::isCached()
    */
-  public function buildForm(array $form,
-    FormStateInterface $form_state,
-    \stdClass $jsonSchema = NULL,
-    \stdClass $uiSchema = NULL,
+  protected function buildJsonFormsForm(array $form,
+    FormStateInterface $formState,
+    \stdClass $jsonSchema,
+    \stdClass $uiSchema,
     int $flags = 0
   ): array {
-    Assertion::notNull($jsonSchema);
-    Assertion::notNull($uiSchema);
-
-    $form_state->set('jsonSchema', $jsonSchema);
-    $form_state->set('uiSchema', $uiSchema);
-    $form_state->set('recalculateOnChange', (bool) ($flags & self::FLAG_RECALCULATE_ONCHANGE));
+    $formState->set('jsonSchema', $jsonSchema);
+    $formState->set('uiSchema', $uiSchema);
+    $formState->set('recalculateOnChange', (bool) ($flags & self::FLAG_RECALCULATE_ONCHANGE));
 
     if (new \stdClass() == $uiSchema) {
       return [];
@@ -105,7 +109,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
 
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
 
-    return $this->formArrayFactory->createFormArray($definition, $form_state);
+    return $this->formArrayFactory->createFormArray($definition, $formState);
   }
 
   /**

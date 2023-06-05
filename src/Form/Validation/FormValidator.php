@@ -38,7 +38,6 @@ final class FormValidator implements FormValidatorInterface {
    * @throws \JsonException
    */
   public function validate(FormStateInterface $formState): ValidationResult {
-
     $data = JsonConverter::toStdClass($formState->getValues());
     $jsonSchema = $formState->get('jsonSchema');
     Assertion::isInstanceOf($jsonSchema, \stdClass::class);
