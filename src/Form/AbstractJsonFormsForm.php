@@ -23,6 +23,7 @@ namespace Drupal\json_forms\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\Form\Util\FormCallbackExecutor;
 use Drupal\json_forms\Form\Validation\FormValidationMapperInterface;
 use Drupal\json_forms\Form\Validation\FormValidatorInterface;
@@ -120,37 +121,68 @@ abstract class AbstractJsonFormsForm extends FormBase {
     if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
       parent::validateForm($form, $formState);
       FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
-      $validationResult = $this->formValidator->validate($formState);
+      $validationResult = $this->formValidator->validate(
+        // @phpstan-ignore-next-line
+        $formState->get('jsonSchema'),
+        $this->getSubmittedData($formState)
+      );
       $this->formValidationMapper->mapErrors($validationResult, $formState);
       $this->formValidationMapper->mapData($validationResult, $formState);
     }
-
-    // Remove internal values (e.g. add buttons for array elements)
-    $formState->unsetValue(self::INTERNAL_VALUES_KEY);
   }
 
   /**
    * @phpstan-return array<int|string, mixed>
    */
   public function calculateData(FormStateInterface $formState): array {
-    $validationResult = $this->formValidator->validate($formState);
+    $validationResult = $this->formValidator->validate(
+      // @phpstan-ignore-next-line
+      $formState->get('jsonSchema'),
+      $this->getSubmittedData($formState)
+    );
 
     return $validationResult->getData();
   }
 
   /**
-   * @return array<int|string, mixed> The values of the form state without
-   *   Drupal internal values such as form_id. So the returned array should
-   *   only contain keys described in the JSON schema.
+   * Subclasses may override doGetSubmittedData()
+   *
+   * @return array<int|string, mixed>
+   *   The values of the form state with keys converted to JSON schema names and
+   *   without Drupal internal values such as form_id. So the returned array
+   *   should only contain keys described in the JSON schema.
+   *
+   * @see doGetSubmittedData()
    */
-  protected function getSubmittedData(FormStateInterface $formState): array {
+  final protected function getSubmittedData(FormStateInterface $formState): array {
+    $key = '__submittedData';
+    if (!$formState->hasTemporaryValue($key)) {
+      $formState->setTemporaryValue($key, $this->doGetSubmittedData($formState));
+    }
+
+    // @phpstan-ignore-next-line
+    return $formState->getTemporaryValue($key);
+  }
+
+  /**
+   * @return array<int|string, mixed>
+   *   The values of the form state with keys converted to JSON schema names and
+   *   without Drupal internal values such as form_id. So the returned array
+   *   should only contain keys described in the JSON schema.
+   */
+  protected function doGetSubmittedData(FormStateInterface $formState): array {
+    // Remove internal values (e.g. add buttons for array elements)
+    $formState->unsetValue(self::INTERNAL_VALUES_KEY);
+
     // We cannot use $formState->cleanValues() because it also drops the submit
     // button value.
-    return array_filter(
+    $data = array_filter(
       $formState->getValues(),
       fn ($key) => !in_array($key, $formState->getCleanValueKeys(), TRUE),
       ARRAY_FILTER_USE_KEY
     );
+
+    return FieldNameUtil::toJsonData($data);
   }
 
 }

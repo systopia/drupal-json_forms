@@ -15,33 +15,28 @@
   <config name="ignore_warnings_on_exit" value="true"/>
 
   <rule ref="vendor/drupal/coder/coder_sniffer/Drupal">
-    <!-- Conflicts with PHPStan type hints -->
-    <exclude name="Drupal.Commenting.FunctionComment.InvalidReturn"/>
-    <exclude name="Drupal.Commenting.FunctionComment.ParamTypeSpaces"/>
-    <exclude name="Drupal.Commenting.FunctionComment.ReturnTypeSpaces"/>
-    <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
+    <!-- Don't enforce phpdoc type hint because it (might) only duplicate a PHP type hint -->
+    <exclude name="Drupal.Commenting.FunctionComment.MissingParamComment"/>
+    <exclude name="Drupal.Commenting.FunctionComment.ParamMissingDefinition"/>
+    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
+
+    <!-- Don't enforce comments -->
+    <exclude name="Drupal.Commenting.VariableComment.Missing"/>
+    <exclude name="Drupal.Commenting.ClassComment.Missing"/>
+    <exclude name="Drupal.Commenting.FunctionComment.Missing"/>
+    <exclude name="Drupal.Commenting.DocComment.MissingShort"/>
+
+    <!-- Dont enforce a single line seperated by a blank line -->
+    <exclude name="Drupal.Commenting.DocComment.ShortSingleLine"/>
+
     <!-- Allow "/** @phpstan-var ... */" -->
     <exclude name="Drupal.Commenting.InlineComment.DocBlock"/>
 
-    <!-- Don't enforce phpdoc type hint because it (might) only duplicate a PHP type hint -->
-    <exclude name="Drupal.Commenting.FunctionComment.ParamMissingDefinition"/>
-    <exclude name="Drupal.Commenting.VariableComment.MissingVar"/>
+    <!-- Allow intersection in @var -->
+    <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
 
     <!-- False positive with license header -->
     <exclude name="Drupal.Commenting.FileComment.NamespaceNoFileDoc"/>
-
-    <!-- False positive when license header is set and variable has no comment -->
-    <!--<exclude name="Drupal.Commenting.VariableComment.WrongStyle"/>-->
-
-    <!-- Do not use object as type hint for \stdClass -->
-    <exclude name="Drupal.Commenting.FunctionComment.IncorrectParamVarName"/>
-
-    <exclude name="Drupal.Commenting.FunctionComment.Missing"/>
-    <exclude name="Drupal.Commenting.DocComment.MissingShort"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingParamComment"/>
-    <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
-    <exclude name="Drupal.Commenting.ClassComment.Missing"/>
-    <exclude name="Drupal.Commenting.VariableComment.Missing"/>
   </rule>
 
   <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice"/>

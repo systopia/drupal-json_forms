@@ -20,10 +20,11 @@ declare(strict_types = 1);
 
 namespace Drupal\json_forms\Form\Validation;
 
-use Drupal\Core\Form\FormStateInterface;
-
 interface FormValidatorInterface {
 
-  public function validate(FormStateInterface $formState): ValidationResult;
+  /**
+   * @phpstan-param array<int|string, mixed> $data JSON serializable.
+   */
+  public function validate(\stdClass $jsonSchema, array $data): ValidationResult;
 
 }

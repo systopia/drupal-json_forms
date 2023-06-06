@@ -25,7 +25,7 @@ use Assert\Assertion;
 final class JsonConverter {
 
   /**
-   * @return array<string, mixed>
+   * @return array<int|string, mixed>
    *
    * @throws \JsonException
    */
@@ -37,7 +37,7 @@ final class JsonConverter {
   }
 
   /**
-   * @param array<string, mixed> $data
+   * @param array<int|string, mixed> $data
    *
    * @throws \JsonException
    */
