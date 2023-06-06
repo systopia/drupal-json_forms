@@ -282,7 +282,22 @@ class ControlDefinition implements DefinitionInterface {
     return $this->controlSchema->suffix ?? NULL;
   }
 
+  /**
+   * If multiple types are set in the property schema, the first non "null"
+   * value is returned, or "null" there's no such value. If a single type is
+   * set, it is returned as is.
+   */
   public function getType(): string {
+    if (is_array($this->propertySchema->type)) {
+      foreach ($this->propertySchema->type as $type) {
+        if ('null' !== $type) {
+          return $type;
+        }
+
+        return 'null';
+      }
+    }
+
     return $this->propertySchema->type;
   }
 
