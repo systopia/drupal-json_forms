@@ -20,8 +20,6 @@ declare(strict_types = 1);
 
 namespace Drupal\json_forms\Form\Validation;
 
-use Assert\Assertion;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Util\JsonConverter;
 use Opis\JsonSchema\Validator as OpisValidator;
 use Systopia\JsonSchema\Errors\ErrorCollector;
@@ -37,10 +35,8 @@ final class FormValidator implements FormValidatorInterface {
   /**
    * @throws \JsonException
    */
-  public function validate(FormStateInterface $formState): ValidationResult {
-    $data = JsonConverter::toStdClass($formState->getValues());
-    $jsonSchema = $formState->get('jsonSchema');
-    Assertion::isInstanceOf($jsonSchema, \stdClass::class);
+  public function validate(\stdClass $jsonSchema, array $data): ValidationResult {
+    $data = JsonConverter::toStdClass($data);
     $errorCollector = new ErrorCollector();
     $this->validator->validate($data, $jsonSchema, ['errorCollector' => $errorCollector]);
 

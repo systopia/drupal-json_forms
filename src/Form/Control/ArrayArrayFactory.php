@@ -71,14 +71,18 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       Assertion::integer($numItems);
     }
 
-    $callbackParentsPrefix = array_merge([AbstractJsonFormsForm::INTERNAL_VALUES_KEY], $definition->getPropertyPath());
+    $callbackParentsPrefix = array_merge(
+      [AbstractJsonFormsForm::INTERNAL_VALUES_KEY],
+      // @phpstan-ignore-next-line
+      $form['#parents'],
+    );
 
     if (0 === $numItems) {
       // Ensure we get an empty array if there's no item.
       $form[] = [
         '#type' => 'hidden',
         '#value' => [],
-        '#parents' => $definition->getPropertyPath(),
+        '#parents' => $definition->getPropertyFormParents(),
       ];
     }
     else {
@@ -106,7 +110,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
             ],
             '#parents' => array_merge($callbackParentsPrefix, [$i, 'remove']),
             '#tree' => TRUE,
-            '#_controlPropertyPath' => $definition->getPropertyPath(),
+            '#_controlPropertyPath' => $definition->getPropertyFormParents(),
           ];
         }
       }

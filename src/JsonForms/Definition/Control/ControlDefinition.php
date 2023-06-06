@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
 use Assert\Assertion;
+use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\ScopePointer;
 
@@ -238,6 +239,13 @@ class ControlDefinition implements DefinitionInterface {
     }
 
     return $this->propertyFormName;
+  }
+
+  /**
+   * @return array<int|string> Value to be used as #parents in the form array.
+   */
+  public function getPropertyFormParents(): array {
+    return FieldNameUtil::toFormParents($this->getPropertyPath());
   }
 
   /**

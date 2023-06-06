@@ -24,6 +24,7 @@ use Assert\Assertion;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Util\FieldNameUtil;
 
 final class RecalculateCallback {
 
@@ -33,7 +34,7 @@ final class RecalculateCallback {
   public static function onChange(array &$form, FormStateInterface $formState): AjaxResponse {
     /** @var \Drupal\json_forms\Form\AbstractJsonFormsForm $formObject */
     $formObject = $formState->getFormObject();
-    $data = $formObject->calculateData($formState);
+    $data = FieldNameUtil::toFormData($formObject->calculateData($formState));
 
     $response = new AjaxResponse();
     static::addInvokeCommands($response, $formState, $data);

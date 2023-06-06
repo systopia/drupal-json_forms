@@ -37,7 +37,7 @@ final class BasicFormPropertiesFactory {
    */
   public static function createBasicProperties(ControlDefinition $definition): array {
     $form = [
-      '#parents' => $definition->getPropertyPath(),
+      '#parents' => $definition->getPropertyFormParents(),
       '#title' => $definition->getLabel(),
       '#tree' => TRUE,
       '#_scope' => $definition->getFullScope(),
