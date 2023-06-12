@@ -293,9 +293,9 @@ class ControlDefinition implements DefinitionInterface {
         if ('null' !== $type) {
           return $type;
         }
-
-        return 'null';
       }
+
+      return 'null';
     }
 
     return $this->propertySchema->type;
