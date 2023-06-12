@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
-use Drupal\json_forms\Form\Control\Callbacks\NumberValueCallback;
+use Drupal\json_forms\Form\Control\Callbacks\SelectValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -49,19 +49,21 @@ final class SelectArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'select',
       '#options' => OptionsBuilder::buildOptions($definition),
+      '#value_callback' => SelectValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
-    if ($definition->getType() === 'number' || $definition->getType() === 'integer') {
-      $form['#value_callback'] = NumberValueCallback::class . '::convert';
-      $form['#_type'] = $definition->getType();
+    if (!$definition->isRequired()) {
+      $form['#empty_value'] = '';
     }
 
     return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
+    $allowedTypes = ['string', 'number', 'integer', 'boolean'];
+
     return $definition instanceof ControlDefinition
-      && in_array($definition->getType(), ['string', 'number', 'integer'], TRUE)
+      && in_array($definition->getType(), $allowedTypes, TRUE)
       && (NULL !== $definition->getEnum() || NULL !== $definition->getOneOf());
   }
 

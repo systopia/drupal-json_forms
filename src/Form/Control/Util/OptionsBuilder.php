@@ -34,12 +34,16 @@ final class OptionsBuilder {
   public static function buildOptions(ControlDefinition $definition): array {
     $options = [];
     foreach ($definition->getEnum() ?? [] as $enum) {
-      $options[$enum] = (string) $enum;
+      if (NULL !== $enum) {
+        $options[$enum] = (string) $enum;
+      }
     }
 
     foreach ($definition->getOneOf() ?? [] as $option) {
       if (\property_exists($option, 'const')) {
-        $options[$option->const] = $option->title ?? (string) $option->const;
+        if (NULL !== $option->const) {
+          $options[$option->const] = $option->title ?? (string) $option->const;
+        }
       }
     }
 
