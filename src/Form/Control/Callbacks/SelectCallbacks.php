@@ -22,7 +22,26 @@ namespace Drupal\json_forms\Form\Control\Callbacks;
 
 use Drupal\Core\Form\FormStateInterface;
 
-final class SelectValueCallback {
+final class SelectCallbacks {
+
+  /**
+   * @phpstan-param array{
+   *   '#value': scalar,
+   *   '#options': array<scalar, string>,
+   *   '#required': bool
+   * }&array<int|string, mixed> $element
+   */
+  public static function validate(array $element, FormStateInterface $formState): void {
+    if (0 === $element['#value'] && isset($element['#options'][0]) && $element['#required']) {
+      /*
+       * 0 is treated as empty value by Drupal and validates "#required".
+       * However if it is in the allowed options we want to accept it as valid
+       * value. Limit validation errors is reset by Drupal after validating this
+       * element.
+       */
+      $formState->setLimitValidationErrors([]);
+    }
+  }
 
   /**
    * @param array<int|string, mixed> $element
@@ -30,7 +49,7 @@ final class SelectValueCallback {
    *
    * @return mixed
    */
-  public static function convert(array $element, $input, FormStateInterface $formState) {
+  public static function value(array &$element, $input, FormStateInterface $formState) {
     $value = self::getValue($element, $input, $formState);
 
     if (NULL === $value) {
@@ -48,7 +67,7 @@ final class SelectValueCallback {
    *
    * @return mixed
    */
-  private static function getValue(array $element, $input, FormStateInterface $formState) {
+  private static function getValue(array &$element, $input, FormStateInterface $formState) {
     if (FALSE === $input) {
       return $element['#default_value'] ?? NULL;
     }

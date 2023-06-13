@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
-use Drupal\json_forms\Form\Control\Callbacks\SelectValueCallback;
+use Drupal\json_forms\Form\Control\Callbacks\SelectCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -49,7 +49,8 @@ final class SelectArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'select',
       '#options' => OptionsBuilder::buildOptions($definition),
-      '#value_callback' => SelectValueCallback::class . '::convert',
+      '#value_callback' => SelectCallbacks::class . '::value',
+      '#element_validate' => [SelectCallbacks::class . '::validate'],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (!$definition->isRequired()) {
