@@ -28,7 +28,9 @@ parameters:
 		- '/^Parameter #1 \$form \(array<int\|string, mixed>\) of method [^\s]+::(build|validate|submit)Form\(\) should be contravariant with parameter \$form \(array\) of method Drupal\\Core\\Form\\(FormInterface|FormBase)::(build|validate|submit)Form\(\)$/'
 		-
 			message: '#^Variable property access on mixed.$#'
-			path: */src/JsonForms/Definition/Control/ControlDefinition.php
+			paths:
+				- */src/JsonForms/Definition/Control/ControlDefinition.php
+				- */src/JsonForms/Definition/Layout/LayoutDefinition.php
 		-
 			message: '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported.$#'
 			path: */src/Form/Control/ObjectArrayFactory.php

@@ -75,6 +75,20 @@ class LayoutDefinition implements DefinitionInterface {
     return $this->layoutSchema->options->readonly ?? $this->parentUiReadonly;
   }
 
+  public function getOptions(): ?\stdClass {
+    return $this->layoutSchema->options ?? NULL;
+  }
+
+  /**
+   * @param string $key
+   * @param mixed $default
+   *
+   * @return mixed
+   */
+  public function getOptionsValue(string $key, $default = NULL) {
+    return $this->layoutSchema->options->{$key} ?? $default;
+  }
+
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
     $definition = (new \ReflectionClass($this))->newInstanceWithoutConstructor();
     $definition->layoutSchema = $this->layoutSchema;
