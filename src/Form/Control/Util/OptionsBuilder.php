@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Control\Util;
 
+use Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 
 final class OptionsBuilder {
@@ -28,18 +29,17 @@ final class OptionsBuilder {
   /**
    * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
    *
-   * @return array<scalar|null, string> Options for radio buttons or select
-   *   fields.
+   * @return array<scalar, string> Options for radio buttons or select fields.
    */
   public static function buildOptions(ControlDefinition $definition): array {
     $options = [];
-    foreach ($definition->getEnum() ?? [] as $enum) {
+    foreach (self::getEnum($definition) as $enum) {
       if (NULL !== $enum) {
         $options[$enum] = (string) $enum;
       }
     }
 
-    foreach ($definition->getOneOf() ?? [] as $option) {
+    foreach (self::getOneOf($definition) as $option) {
       if (\property_exists($option, 'const')) {
         if (NULL !== $option->const) {
           $options[$option->const] = $option->title ?? (string) $option->const;
@@ -48,6 +48,38 @@ final class OptionsBuilder {
     }
 
     return $options;
+  }
+
+  /**
+   * @phpstan-return array<scalar|null>
+   */
+  private static function getEnum(ControlDefinition $definition): array {
+    if ($definition instanceof ArrayControlDefinition) {
+      $items = $definition->getItems();
+      if (NULL === $items) {
+        return [];
+      }
+
+      return $items->enum ?? [];
+    }
+
+    return $definition->getEnum() ?? [];
+  }
+
+  /**
+   * @phpstan-return array<\stdClass>
+   */
+  private static function getOneOf(ControlDefinition $definition): array {
+    if ($definition instanceof ArrayControlDefinition) {
+      $items = $definition->getItems();
+      if (NULL === $items) {
+        return [];
+      }
+
+      return $items->oneOf ?? [];
+    }
+
+    return $definition->getOneOf() ?? [];
   }
 
 }
