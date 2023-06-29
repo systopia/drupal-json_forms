@@ -47,6 +47,10 @@ final class BasicFormPropertiesFactory {
       $form['#description'] = $definition->getDescription();
     }
 
+    if (NULL !== $definition->getOptionsValue('placeholder')) {
+      $form['#attributes'] = ['placeholder' => $definition->getOptionsValue('placeholder')];
+    }
+
     return $form;
   }
 
