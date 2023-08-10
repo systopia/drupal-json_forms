@@ -21,14 +21,16 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
+use Drupal\json_forms\Util\ConvertUtil;
+
 final class ObjectControlDefinition extends ControlDefinition {
 
   public function getMaxProperties(): ?int {
-    return $this->propertySchema->maxProperties ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->maxProperties ?? NULL);
   }
 
   public function getMinProperties(): ?int {
-    return $this->propertySchema->minProperties ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->minProperties ?? NULL);
   }
 
   /**
@@ -42,7 +44,7 @@ final class ObjectControlDefinition extends ControlDefinition {
    * @return array<string>|null
    */
   public function getRequired(): ?array {
-    return $this->propertySchema->required ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->required ?? NULL);
   }
 
   public function getDependentRequired(): ?\stdClass {

@@ -21,18 +21,20 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
+use Drupal\json_forms\Util\ConvertUtil;
+
 class StringControlDefinition extends ControlDefinition {
 
   public function getMaxLength(): ?int {
-    return $this->propertySchema->maxLength ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->maxLength ?? NULL);
   }
 
   public function getMinLength(): ?int {
-    return $this->propertySchema->minLength ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->minLength ?? NULL);
   }
 
   public function getPattern(): ?string {
-    return $this->propertySchema->pattern ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->pattern ?? NULL);
   }
 
 }

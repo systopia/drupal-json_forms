@@ -21,33 +21,35 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
+use Drupal\json_forms\Util\ConvertUtil;
+
 class NumberControlDefinition extends ControlDefinition {
 
   public function getMultipleOf(): ?int {
-    return $this->propertySchema->multipleOf ?? NULL;
+    return ConvertUtil::stdClassToNull($this->getpropertySchema->multipleOf ?? NULL);
   }
 
   public function getMaximum(): ?int {
-    return $this->propertySchema->maximum ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->maximum ?? NULL);
   }
 
   public function getExclusiveMaximum(): ?int {
-    return $this->propertySchema->exclusiveMaximum ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->exclusiveMaximum ?? NULL);
   }
 
   public function getMinimum(): ?int {
-    return $this->propertySchema->minimum ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->minimum ?? NULL);
   }
 
   public function getExclusiveMinimum(): ?int {
-    return $this->propertySchema->exclusiveMinimum ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->exclusiveMinimum ?? NULL);
   }
 
   /**
    * @return int|null Not a standardized property.
    */
   public function getPrecision(): ?int {
-    return $this->propertySchema->precision ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->precision ?? NULL);
   }
 
 }
