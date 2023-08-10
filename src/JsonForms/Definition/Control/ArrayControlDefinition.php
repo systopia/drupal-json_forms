@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
+use Drupal\json_forms\Util\ConvertUtil;
+
 final class ArrayControlDefinition extends ControlDefinition {
 
   public function getItems(): ?\stdClass {
@@ -35,15 +37,15 @@ final class ArrayControlDefinition extends ControlDefinition {
   }
 
   public function getMaxItems(): ?int {
-    return $this->propertySchema->maxItems ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->maxItems ?? NULL);
   }
 
   public function getMinItems(): ?int {
-    return $this->propertySchema->minItems ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->minItems ?? NULL);
   }
 
   public function getUniqueItems(): ?bool {
-    return $this->propertySchema->uniqueItems ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->uniqueItems ?? NULL);
   }
 
   public function getContains(): ?\stdClass {
@@ -51,11 +53,11 @@ final class ArrayControlDefinition extends ControlDefinition {
   }
 
   public function getMaxContains(): ?int {
-    return $this->propertySchema->maxContains ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->maxContains ?? NULL);
   }
 
   public function getMinContains(): ?int {
-    return $this->propertySchema->minContains ?? NULL;
+    return ConvertUtil::stdClassToNull($this->propertySchema->minContains ?? NULL);
   }
 
 }
