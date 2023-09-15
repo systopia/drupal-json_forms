@@ -24,11 +24,18 @@ namespace Drupal\json_forms\Form\Markup;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
 final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
+
+  private StatesArrayFactoryInterface $statesArrayFactory;
+
+  public function __construct(StatesArrayFactoryInterface $statesArrayFactory) {
+    $this->statesArrayFactory = $statesArrayFactory;
+  }
 
   /**
    * {@inheritDoc}
@@ -40,11 +47,17 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($definition, MarkupDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition $definition */
 
-    return [
+    $form = [
       '#type' => 'item',
       '#title' => $definition->getLabel(),
       '#markup' => $definition->getContent(),
     ];
+
+    if (NULL !== $definition->getRule()) {
+      $form['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
 use Assert\Assertion;
+use Drupal\json_forms\Form\Control\Util\FormPropertyUtil;
 use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\ScopePointer;
@@ -230,12 +231,7 @@ class ControlDefinition implements DefinitionInterface {
    */
   public function getPropertyFormName(): string {
     if (NULL == $this->propertyFormName) {
-      $path = $this->getPropertyPath();
-      $formName = (string) \reset($path);
-      while (FALSE !== ($next = next($path))) {
-        $formName .= '[' . $next . ']';
-      }
-      $this->propertyFormName = $formName;
+      $this->propertyFormName = FormPropertyUtil::getFormNameForPropertyPath($this->getPropertyPath());
     }
 
     return $this->propertyFormName;
@@ -257,6 +253,10 @@ class ControlDefinition implements DefinitionInterface {
 
   public function getPropertySchema(): \stdClass {
     return $this->propertySchema;
+  }
+
+  public function getRule(): ?\stdClass {
+    return $this->controlSchema->rule ?? NULL;
   }
 
   public function getFullScope(): string {

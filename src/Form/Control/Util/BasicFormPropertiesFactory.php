@@ -23,6 +23,7 @@ namespace Drupal\json_forms\Form\Control\Util;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Control\Callbacks\RecalculateCallback;
+use Drupal\json_forms\Form\Control\Rule\StatesArrayFactory;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 
 final class BasicFormPropertiesFactory {
@@ -93,6 +94,11 @@ final class BasicFormPropertiesFactory {
         'progress' => [],
         'disable-refocus' => TRUE,
       ];
+    }
+
+    if (NULL !== $definition->getRule()) {
+      $statesArrayFactory = new StatesArrayFactory();
+      $form['#states'] = $statesArrayFactory->createStatesArray($definition->getRule());
     }
 
     return array_merge(static::createBasicProperties($definition), $form);

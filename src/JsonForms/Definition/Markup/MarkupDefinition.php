@@ -67,6 +67,10 @@ final class MarkupDefinition implements DefinitionInterface {
     return $this->markupSchema;
   }
 
+  public function getRule(): ?\stdClass {
+    return $this->markupSchema->rule ?? NULL;
+  }
+
   public function getType(): string {
     return $this->markupSchema->type;
   }

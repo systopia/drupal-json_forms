@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\json_forms\Unit\Form\Markup;
 
 use Drupal\Core\Form\FormState;
+use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory;
 use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
@@ -44,29 +45,44 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
 
   private FormState $formState;
 
+  /**
+   * @var \Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface&\PHPUnit\Framework\MockObject\MockObject
+   */
+  private MockObject $statesArrayFactoryMock;
+
   protected function setUp(): void {
     parent::setUp();
-    $this->factory = new HtmlMarkupArrayFactory();
+    $this->statesArrayFactoryMock = $this->createMock(StatesArrayFactoryInterface::class);
+    $this->factory = new HtmlMarkupArrayFactory($this->statesArrayFactoryMock);
     $this->formArrayFactoryMock = $this->createMock(FormArrayFactoryInterface::class);
     $this->formState = new FormState();
   }
 
   public function test(): void {
+    $ruleSchema = (object) [
+      'effect' => 'SHOW',
+    ];
+
     $uiSchema = (object) [
       'type' => 'Markup',
       'contentMediaType' => 'text/html',
       'content' => '<em>test</em>',
       'label' => 'Label',
+      'rule' => $ruleSchema,
     ];
 
     $definition = new MarkupDefinition($uiSchema);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
+    $this->statesArrayFactoryMock->method('createStatesArray')
+      ->with($ruleSchema)
+      ->willReturn(['visible' => []]);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
     static::assertEquals([
       '#type' => 'item',
       '#title' => 'Label',
       '#markup' => '<em>test</em>',
+      '#states' => ['visible' => []],
     ], $form);
   }
 
