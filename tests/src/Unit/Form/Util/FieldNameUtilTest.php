@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\json_forms\Form\Util;
+namespace Drupal\Tests\json_forms\Unit\Form\Util;
 
 use Drupal\json_forms\Form\Util\FieldNameUtil;
 use PHPUnit\Framework\TestCase;
