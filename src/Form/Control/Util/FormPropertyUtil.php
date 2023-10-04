@@ -27,7 +27,7 @@ final class FormPropertyUtil {
    * @phpstan-param array<int|string> $propertyPath
    */
   public static function getFormNameForPropertyPath(array $propertyPath): string {
-    $formName = (string) \reset($propertyPath);
+    $formName = (string) reset($propertyPath);
     while (FALSE !== ($next = next($propertyPath))) {
       $formName .= '[' . $next . ']';
     }
