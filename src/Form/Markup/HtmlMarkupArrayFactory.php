@@ -47,17 +47,17 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($definition, MarkupDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition $definition */
 
-    $form = [
+    $element = [
       '#type' => 'item',
       '#title' => $definition->getLabel(),
       '#markup' => $definition->getContent(),
     ];
 
     if (NULL !== $definition->getRule()) {
-      $form['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
+      $element['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
     }
 
-    return $form;
+    return $element;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
