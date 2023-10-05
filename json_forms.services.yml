@@ -15,3 +15,6 @@ services:
   Drupal\json_forms\Form\Validation\FormValidatorInterface:
     class: Drupal\json_forms\Form\Validation\FormValidator
     arguments: ['@Opis\JsonSchema\Validator']
+
+  Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface:
+    class: Drupal\json_forms\Form\Control\Rule\StatesArrayFactory
