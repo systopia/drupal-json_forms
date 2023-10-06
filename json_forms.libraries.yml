@@ -8,3 +8,12 @@ confirm:
     - core/drupal.dialog
     - core/jquery
     - core/once
+
+submit:
+  version: 0.1.0
+  js:
+    js/submit.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once

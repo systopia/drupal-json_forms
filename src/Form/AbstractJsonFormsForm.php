@@ -100,9 +100,10 @@ abstract class AbstractJsonFormsForm extends FormBase {
     \stdClass $uiSchema,
     int $flags = 0
   ): array {
+    $recalculateOnChange = (bool) ($flags & self::FLAG_RECALCULATE_ONCHANGE);
     $formState->set('jsonSchema', $jsonSchema);
     $formState->set('uiSchema', $uiSchema);
-    $formState->set('recalculateOnChange', (bool) ($flags & self::FLAG_RECALCULATE_ONCHANGE));
+    $formState->set('recalculateOnChange', $recalculateOnChange);
 
     if (new \stdClass() == $uiSchema) {
       return [];
@@ -112,6 +113,11 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $form = $this->formArrayFactory->createFormArray($definition, $formState);
     // @phpstan-ignore-next-line
     $form['#attributes']['class'][] = 'json-forms';
+
+    if ($recalculateOnChange) {
+      // @phpstan-ignore-next-line
+      $form['#attached']['library'][] = 'json_forms/submit';
+    }
 
     return $form;
   }
