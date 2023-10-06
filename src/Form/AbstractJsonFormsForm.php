@@ -109,8 +109,11 @@ abstract class AbstractJsonFormsForm extends FormBase {
     }
 
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
+    $form = $this->formArrayFactory->createFormArray($definition, $formState);
+    // @phpstan-ignore-next-line
+    $form['#attributes']['class'][] = 'json-forms';
 
-    return $this->formArrayFactory->createFormArray($definition, $formState);
+    return $form;
   }
 
   /**
