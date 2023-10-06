@@ -55,7 +55,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'fieldset',
       '#description_display' => 'before',
-      '#prefix' => sprintf('<div id="%s">', $fieldsetWrapperId),
+      '#prefix' => sprintf('<div id="%s" class="json-forms-array-wrapper">', $fieldsetWrapperId),
       '#suffix' => '</div>',
       'items' => [],
     ] + BasicFormPropertiesFactory::createBasicProperties($definition);
