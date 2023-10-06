@@ -29,19 +29,31 @@ class NumberControlDefinition extends ControlDefinition {
     return ConvertUtil::stdClassToNull($this->getpropertySchema->multipleOf ?? NULL);
   }
 
-  public function getMaximum(): ?int {
+  /**
+   * @return float|int|null
+   */
+  public function getMaximum() {
     return ConvertUtil::stdClassToNull($this->propertySchema->maximum ?? NULL);
   }
 
-  public function getExclusiveMaximum(): ?int {
+  /**
+   * @return float|int|null
+   */
+  public function getExclusiveMaximum() {
     return ConvertUtil::stdClassToNull($this->propertySchema->exclusiveMaximum ?? NULL);
   }
 
-  public function getMinimum(): ?int {
+  /**
+   * @return float|int|null
+   */
+  public function getMinimum() {
     return ConvertUtil::stdClassToNull($this->propertySchema->minimum ?? NULL);
   }
 
-  public function getExclusiveMinimum(): ?int {
+  /**
+   * @return float|int|null
+   */
+  public function getExclusiveMinimum() {
     return ConvertUtil::stdClassToNull($this->propertySchema->exclusiveMinimum ?? NULL);
   }
 
