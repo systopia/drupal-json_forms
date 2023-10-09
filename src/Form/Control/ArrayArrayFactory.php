@@ -71,7 +71,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       Assertion::integer($numItems);
     }
 
-    $callbackParentsPrefix = array_merge(
+    $internalParentsPrefix = array_merge(
       [AbstractJsonFormsForm::INTERNAL_VALUES_KEY],
       // @phpstan-ignore-next-line
       $form['#parents'],
@@ -87,6 +87,12 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     }
     else {
       $arrayLayoutDefinition = $this->createLayoutDefinition($definition);
+      if ('TableRow' === $arrayLayoutDefinition->getType()) {
+        $form['items']['#type'] = 'table';
+        $form['items']['#parents'] = array_merge($internalParentsPrefix, ['table']);
+        $form['items']['#header'] = $this->buildTableHeader($arrayLayoutDefinition);
+      }
+
       for ($i = 0; $i < $numItems; $i++) {
         $scopePrefix = $definition->getFullScope() . '/' . $i;
         $form['items'][$i] = $formArrayFactory->createFormArray(
@@ -108,7 +114,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
               'callback' => ArrayCallbacks::class . '::ajaxRemove',
               'wrapper' => $fieldsetWrapperId,
             ],
-            '#parents' => array_merge($callbackParentsPrefix, [$i, 'remove']),
+            '#parents' => array_merge($internalParentsPrefix, [$i, 'remove']),
             '#tree' => TRUE,
             '#_controlPropertyPath' => $definition->getPropertyFormParents(),
           ];
@@ -128,7 +134,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
           'callback' => ArrayCallbacks::class . '::ajaxAdd',
           'wrapper' => $fieldsetWrapperId,
         ],
-        '#parents' => array_merge($callbackParentsPrefix, ['add']),
+        '#parents' => array_merge($internalParentsPrefix, ['add']),
         '#tree' => TRUE,
         '#name' => $definition->getFullScope() . '_add',
         '#_controlPropertyPath' => $definition->getPropertyPath(),
@@ -142,23 +148,45 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     return $definition instanceof ControlDefinition && 'array' === $definition->getType();
   }
 
-  private function createLayoutDefinition(ArrayControlDefinition $definition): LayoutDefinition {
+  /**
+   * @phpstan-return array<string>
+   */
+  private function buildTableHeader(LayoutDefinition $arrayLayoutDefinition): array {
+    $header = [];
+    foreach ($arrayLayoutDefinition->getElements() as $element) {
+      if ($element instanceof ControlDefinition) {
+        $label = $element->getLabel();
+        if ($element->isRequired()) {
+          $label .= ' *';
+        }
+      }
+      else {
+        $label = '';
+      }
 
+      $header[] = $label;
+    }
+
+    // Column for remove button.
+    $header[] = '';
+
+    return $header;
+  }
+
+  private function createLayoutDefinition(ArrayControlDefinition $definition): LayoutDefinition {
+    // Note: We actually do not use "detail" as it is described in JSON Forms:
+    // https://jsonforms.io/docs/uischema/controls#the-detail-option
+    // Should we use another option name instead?
     $arrayUiSchema = $definition->getOptionsValue('detail');
     if (!$arrayUiSchema instanceof \stdClass) {
       $arrayUiSchema = new \stdClass();
     }
 
-    if (NULL === ($arrayUiSchema->type ?? NULL)) {
-      $arrayUiSchema->type = 'VerticalLayout';
-    }
+    $arrayUiSchema->type ??= 'TableRow';
 
     $items = $definition->getItems();
     Assertion::isInstanceOf($items, \stdClass::class);
-
-    if (NULL === ($arrayUiSchema->elements ?? NULL)) {
-      $arrayUiSchema->elements = $this->createElementSchemas($items);
-    }
+    $arrayUiSchema->elements ??= $this->createElementSchemas($items);
 
     return new LayoutDefinition($arrayUiSchema, $items, $definition->isUiReadonly());
   }

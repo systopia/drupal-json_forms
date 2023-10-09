@@ -34,7 +34,8 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
   /**
    * {@inheritDoc}
    */
-  public function createFormArray(DefinitionInterface $definition,
+  public function createFormArray(
+    DefinitionInterface $definition,
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
   ): array {
@@ -56,7 +57,8 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
    *
    * @throws \InvalidArgumentException
    */
-  protected function createElementsFormArray(LayoutDefinition $definition,
+  protected function createElementsFormArray(
+    LayoutDefinition $definition,
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
   ): array {
@@ -69,10 +71,24 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
         $key = $index;
       }
 
-      $form[$key] = $formArrayFactory->createFormArray($element, $formState);
+      $form[$key] = $this->createElementFormArray($element, $formState, $formArrayFactory);
     }
 
     return $form;
+  }
+
+  /**
+   * @return array<int|string, mixed>
+   *   A form array for the specified element.
+   *
+   * @throws \InvalidArgumentException
+   */
+  protected function createElementFormArray(
+    DefinitionInterface $element,
+    FormStateInterface $formState,
+    FormArrayFactoryInterface $formArrayFactory
+  ): array {
+    return $formArrayFactory->createFormArray($element, $formState);
   }
 
 }
