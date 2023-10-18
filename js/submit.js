@@ -21,23 +21,31 @@
  * the field was changed and performs an AJAX call on change.
  */
 (function ($, Drupal, once) {
+
+  let ajaxCallRunning = false;
+  let submitButtonClicked;
+
+  $(document).on('ajaxStart', () => ajaxCallRunning = true);
+
+  $(document).on('ajaxStop', () => {
+    ajaxCallRunning = false;
+    if (submitButtonClicked) {
+      submitButtonClicked.click();
+    }
+  });
+
   Drupal.behaviors.jsonFormsSubmit = {
     attach: function (context) {
-      function submit(event) {
-        // If there's an active AJAX call wait for ajaxStop event.
-        if ($.active > 0) {
-          $(document).on('ajaxStop', () => event.target.click());
-          event.preventDefault();
-        }
-      }
-
-      function attachClick(context) {
-        once('json-forms-submit', 'input[type="submit"]', context).forEach((element) => {
-          element.onclick = submit;
+      once('json-forms-submit', '.json-forms-submit', context).forEach((element) => {
+        $(element).on('click', (event) => {
+          if (ajaxCallRunning) {
+            submitButtonClicked = event.target;
+            event.preventDefault();
+          } else {
+            submitButtonClicked = null;
+          }
         });
-      }
-
-      attachClick(context);
+      });
     }
   };
 
