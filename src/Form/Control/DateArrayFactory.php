@@ -52,7 +52,6 @@ final class DateArrayFactory extends AbstractConcreteFormArrayFactory {
     if ('change' === ($form['#ajax']['event'] ?? NULL)) {
       // For input fields of type "date" the "change" event is triggered while
       // entering a value, so we have to use "blur" instead.
-      // @phpstan-ignore-next-line
       $form['#ajax']['event'] = 'blur';
     }
 
