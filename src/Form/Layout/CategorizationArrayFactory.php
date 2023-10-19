@@ -21,17 +21,53 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Layout;
 
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
 final class CategorizationArrayFactory extends AbstractLayoutArrayFactory {
+
+  private int $count = 0;
+
+  private string $group = '';
+
+  public function createFormArray(
+    DefinitionInterface $definition,
+    FormStateInterface $formState,
+    FormArrayFactoryInterface $formArrayFactory
+  ): array {
+    $oldGroup = $this->group;
+    $this->group = '_categorization' . $this->count++;
+    try {
+      return parent::createFormArray($definition, $formState, $formArrayFactory);
+    }
+    finally {
+      $this->group = $oldGroup;
+    }
+  }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
     return $definition instanceof LayoutDefinition && 'Categorization' === $definition->getType();
   }
 
   protected function createBasicFormArray(LayoutDefinition $definition): array {
-    return ['#type' => 'vertical_tabs'];
+    // The categories (details elements of the vertical_tabs element) MUST
+    // NOT be children of the vertical_tabs element, thus we add the group name
+    // as key (which also makes usage of #parents unnecessary).
+    return [
+      $this->group => [
+        '#type' => 'vertical_tabs',
+      ],
+    ];
+  }
+
+  protected function createElementFormArray(
+    DefinitionInterface $element,
+    FormStateInterface $formState,
+    FormArrayFactoryInterface $formArrayFactory
+  ): array {
+    return ['#group' => $this->group] + parent::createElementFormArray($element, $formState, $formArrayFactory);
   }
 
 }
