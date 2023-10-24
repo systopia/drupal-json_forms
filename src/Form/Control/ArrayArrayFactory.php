@@ -149,15 +149,20 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
   }
 
   /**
-   * @phpstan-return array<string>
+   * @phpstan-return array<string|array<string, mixed>>
    */
   private function buildTableHeader(LayoutDefinition $arrayLayoutDefinition): array {
     $header = [];
     foreach ($arrayLayoutDefinition->getElements() as $element) {
       if ($element instanceof ControlDefinition) {
-        $label = $element->getLabel();
-        if ($element->isRequired()) {
-          $label .= ' *';
+        if ('hidden' === $element->getOptionsValue('type')) {
+          $label = ['style' => ['padding: 0;']];
+        }
+        else {
+          $label = $element->getLabel();
+          if ($element->isRequired()) {
+            $label .= ' *';
+          }
         }
       }
       else {

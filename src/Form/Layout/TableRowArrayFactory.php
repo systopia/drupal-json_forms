@@ -23,6 +23,7 @@ namespace Drupal\json_forms\Form\Layout;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
+use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
@@ -44,8 +45,15 @@ final class TableRowArrayFactory extends AbstractLayoutArrayFactory {
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
   ): array {
-    return ['#title_display' => 'invisible']
+    $form = ['#title_display' => 'invisible']
       + parent::createElementFormArray($element, $formState, $formArrayFactory);
+
+    if ($element instanceof ControlDefinition && 'hidden' === $element->getOptionsValue('type')) {
+      // @phpstan-ignore-next-line
+      $form['#wrapper_attributes']['style'][] = 'padding: 0;';
+    }
+
+    return $form;
   }
 
 }
