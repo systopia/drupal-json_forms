@@ -1,12 +1,20 @@
-# We cannot use things like autowiring or "!tagged_iterator":
-# https://www.drupal.org/project/drupal/issues/3111008
-
 services:
+  _defaults:
+    autowire: true
+    public: false # Controller classes and services directly fetched from container need to be public
+
   Drupal\json_forms\Form\FormArrayFactoryInterface:
     class: Drupal\json_forms\Form\FormArrayFactory
+    public: true
 
   Drupal\json_forms\Form\Validation\FormValidationMapperInterface:
     class: Drupal\json_forms\Form\Validation\FormValidationMapper
+    public: true
+
+  Systopia\JsonSchema\Translation\TranslatorInterface:
+    class: Drupal\json_forms\Form\Validation\Translation\DrupalJsonSchemaValidationTranslator
+    arguments:
+      - '@language_manager'
 
   Opis\JsonSchema\Validator:
     class: Opis\JsonSchema\Validator
@@ -14,7 +22,7 @@ services:
 
   Drupal\json_forms\Form\Validation\FormValidatorInterface:
     class: Drupal\json_forms\Form\Validation\FormValidator
-    arguments: ['@Opis\JsonSchema\Validator']
+    public: true
 
   Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface:
     class: Drupal\json_forms\Form\Control\Rule\StatesArrayFactory
