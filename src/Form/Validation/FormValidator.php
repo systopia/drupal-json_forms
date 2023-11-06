@@ -23,12 +23,16 @@ namespace Drupal\json_forms\Form\Validation;
 use Drupal\json_forms\Form\Util\JsonConverter;
 use Opis\JsonSchema\Validator as OpisValidator;
 use Systopia\JsonSchema\Errors\ErrorCollector;
+use Systopia\JsonSchema\Translation\TranslatorInterface;
 
 final class FormValidator implements FormValidatorInterface {
 
+  private TranslatorInterface $translator;
+
   private OpisValidator $validator;
 
-  public function __construct(OpisValidator $validator) {
+  public function __construct(TranslatorInterface $translator, OpisValidator $validator) {
+    $this->translator = $translator;
     $this->validator = $validator;
   }
 
@@ -40,7 +44,7 @@ final class FormValidator implements FormValidatorInterface {
     $errorCollector = new ErrorCollector();
     $this->validator->validate($data, $jsonSchema, ['errorCollector' => $errorCollector]);
 
-    return new ValidationResult(JsonConverter::toArray($data), $errorCollector);
+    return new ValidationResult(JsonConverter::toArray($data), $errorCollector, $this->translator);
   }
 
 }
