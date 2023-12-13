@@ -27,16 +27,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/systopia/opis-json-schema-ext"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/systopia/expression-language-ext"
-        }
-    ],
     "require": {
         "php": "^7.4 || ^8",
         "systopia/expression-language-ext": "~0.1",
