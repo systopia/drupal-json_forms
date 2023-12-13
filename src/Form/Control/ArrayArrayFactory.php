@@ -89,7 +89,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       $arrayLayoutDefinition = $this->createLayoutDefinition($definition);
       if ('TableRow' === $arrayLayoutDefinition->getType()) {
         $form['items']['#type'] = 'table';
-        $form['items']['#parents'] = array_merge($internalParentsPrefix, ['table']);
+        $form['items']['#input'] = FALSE;
         $form['items']['#header'] = $this->buildTableHeader($arrayLayoutDefinition);
       }
 
