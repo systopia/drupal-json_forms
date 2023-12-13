@@ -48,7 +48,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     $definition = ArrayControlDefinition::fromDefinition($definition);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition $definition */
 
-    $fieldsetWrapperId = 'array-wrapper-' . implode('_', $definition->getPropertyPath());
+    $fieldsetWrapperId = 'array-wrapper-' . str_replace('.', '__', implode('_', $definition->getPropertyPath()));
     // phpcs:disable Drupal.Commenting.InlineComment.DocBlock
     /** @phpstan-var array<int|string, mixed>&array{items: array<int, mixed>} $form */
     // phpcs:enable
@@ -60,7 +60,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       'items' => [],
     ] + BasicFormPropertiesFactory::createBasicProperties($definition);
 
-    $propertyAccessor = FormStatePropertyAccessor::create($formState, $definition->getPropertyPath());
+    $propertyAccessor = FormStatePropertyAccessor::create($formState, $definition->getPropertyFormParents());
     $numItems = $propertyAccessor->getProperty('numItems');
     if (NULL === $numItems) {
       $items = $formState->getTemporaryValue($definition->getPropertyPath());
@@ -137,7 +137,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
         '#parents' => array_merge($internalParentsPrefix, ['add']),
         '#tree' => TRUE,
         '#name' => $definition->getFullScope() . '_add',
-        '#_controlPropertyPath' => $definition->getPropertyPath(),
+        '#_controlPropertyPath' => $definition->getPropertyFormParents(),
       ];
     }
 
