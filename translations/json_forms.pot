@@ -1,0 +1,41 @@
+#
+# Generated from files:
+#  json_forms.info.yml: n/a
+#  js/confirm.js: n/a
+#  src/Form/Layout/TableArrayFactory.php: n/a
+#
+"POT-Creation-Date: 2023-12-13 12:00+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: json_forms.info.yml:0;0
+msgid "JSONForms"
+msgstr ""
+
+#: json_forms.info.yml:0
+msgid "Create a Drupal form from a JSONForms definition."
+msgstr ""
+
+#: js/confirm.js:0
+msgid "Confirm action"
+msgstr ""
+
+#: js/confirm.js:0
+msgid "Are you sure?"
+msgstr ""
+
+#: js/confirm.js:0
+msgid "Yes"
+msgstr ""
+
+#: js/confirm.js:0
+msgid "No"
+msgstr ""
+
+#: src/Form/Layout/TableArrayFactory.php:40
+msgid "No data available"
+msgstr ""
+

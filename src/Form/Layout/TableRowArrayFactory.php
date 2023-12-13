@@ -26,6 +26,7 @@ use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
+use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
 /**
  * Creates an array for a row in a table render element.
@@ -45,10 +46,25 @@ final class TableRowArrayFactory extends AbstractLayoutArrayFactory {
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
   ): array {
+
+    if ($element instanceof MarkupDefinition) {
+      $label = $element->getLabel();
+      try {
+        // HtmlMarkupArrayFactory handles elements without label differently.
+        $element->getMarkupSchema()->label = NULL;
+
+        return parent::createElementFormArray($element, $formState, $formArrayFactory);
+      }
+      finally {
+        $element->getMarkupSchema()->label = $label;
+      }
+    }
+
     $form = ['#title_display' => 'invisible']
       + parent::createElementFormArray($element, $formState, $formArrayFactory);
 
     if ($element instanceof ControlDefinition && 'hidden' === $element->getOptionsValue('type')) {
+      // Use no space for table cell.
       // @phpstan-ignore-next-line
       $form['#wrapper_attributes']['style'][] = 'padding: 0;';
     }
