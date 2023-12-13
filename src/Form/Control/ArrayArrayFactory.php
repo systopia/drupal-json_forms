@@ -156,6 +156,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     foreach ($arrayLayoutDefinition->getElements() as $element) {
       if ($element instanceof ControlDefinition) {
         if ('hidden' === $element->getOptionsValue('type')) {
+          // Use no space for table cell.
           $label = ['style' => ['padding: 0;']];
         }
         else {
