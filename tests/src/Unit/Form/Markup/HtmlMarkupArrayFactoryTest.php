@@ -80,9 +80,26 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
     static::assertEquals([
       '#type' => 'item',
+      '#input' => FALSE,
       '#title' => 'Label',
       '#markup' => '<em>test</em>',
       '#states' => ['visible' => []],
+    ], $form);
+  }
+
+  public function testNoLabelAndNoRule(): void {
+    $uiSchema = (object) [
+      'type' => 'Markup',
+      'contentMediaType' => 'text/html',
+      'content' => '<em>test</em>',
+    ];
+
+    $definition = new MarkupDefinition($uiSchema);
+    static::assertTrue($this->factory->supportsDefinition($definition));
+
+    $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
+    static::assertSame([
+      '#markup' => '<em>test</em>',
     ], $form);
   }
 
