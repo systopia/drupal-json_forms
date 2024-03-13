@@ -34,7 +34,7 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
 
   public static function getPriority(): int {
-    return 10;
+    return SelectArrayFactory::getPriority() + 1;
   }
 
   /**
@@ -47,7 +47,7 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $form = [
-      '#type' => 'radio',
+      '#type' => 'radios',
       '#options' => OptionsBuilder::buildOptions($definition),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
@@ -60,9 +60,12 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
+    $allowedTypes = ['string', 'number', 'integer', 'boolean'];
+
     return $definition instanceof ControlDefinition
-      && in_array($definition->getType(), ['string', 'number', 'integer'], TRUE)
-      && 'radio' === $definition->getControlFormat();
+      && in_array($definition->getType(), $allowedTypes, TRUE)
+      && 'radio' === $definition->getControlFormat()
+      && (NULL !== $definition->getEnum() || NULL !== $definition->getOneOf());
   }
 
 }
