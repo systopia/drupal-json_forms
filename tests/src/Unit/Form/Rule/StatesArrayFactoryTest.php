@@ -120,7 +120,11 @@ final class StatesArrayFactoryTest extends TestCase {
       [
         'enabled' => [
           '[name="foo[bar][baz]"]' => [
-            ['checked' => FALSE],
+            [
+              ['checked' => FALSE],
+              'and',
+              ['value' => 0],
+            ],
           ],
         ],
       ],
