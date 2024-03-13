@@ -24,7 +24,9 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": true,
+            "phpstan/extension-installer": true
         }
     },
     "require": {
@@ -33,8 +35,8 @@
         "systopia/opis-json-schema-ext": "~0.2"
     },
     "require-dev": {
-        "drupal/core": "^9.1.6",
-        "drupal/core-dev": "^9.1.6"
+        "drupal/core": "^9.5 || ^10",
+        "drupal/core-dev": "^9.5 || ^10"
     },
     "scripts": {
         "composer-phpstan": [
