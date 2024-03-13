@@ -9,6 +9,11 @@
             "email": "info@systopia.de"
         }
     ],
+    "extra": {
+	"branch-alias": {
+            "dev-main": "0.3-dev"
+        }
+    },
     "autoload": {
         "psr-4": {
             "Drupal\\json_forms\\": "src/"
