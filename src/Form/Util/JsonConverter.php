@@ -42,6 +42,10 @@ final class JsonConverter {
    * @throws \JsonException
    */
   public static function toStdClass(array $data): \stdClass {
+    if ([] === $data) {
+      return new \stdClass();
+    }
+
     $result = \json_decode(\json_encode($data, JSON_THROW_ON_ERROR));
     Assertion::isInstanceOf($result, \stdClass::class);
 
