@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Callbacks\NumberValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -45,9 +46,16 @@ class HiddenArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
 
-    return [
+    $form = [
       '#type' => 'hidden',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    if ('number' === $definition->getType() || 'integer' === $definition->getType()) {
+      $form['#value_callback'] = NumberValueCallback::class . '::convert';
+      $form['#_type'] = $definition->getType();
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
