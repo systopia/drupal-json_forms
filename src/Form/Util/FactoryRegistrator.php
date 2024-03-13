@@ -57,7 +57,12 @@ final class FactoryRegistrator {
    * @phpstan-param class-string $class
    */
   public static function registerFactory(ContainerBuilder $container, string $class): void {
-    $container->autowire($class)->addTag('json_forms.concrete_form_array_factory');
+    if (!$container->has($class)) {
+      $container->autowire($class)->addTag('json_forms.concrete_form_array_factory');
+    }
+    elseif (!$container->getDefinition($class)->hasTag('json_forms.concrete_form_array_factory')) {
+      $container->getDefinition($class)->addTag('json_forms.concrete_form_array_factory');
+    }
   }
 
   private static function getClass(string $namespace, \RecursiveDirectoryIterator $it): string {
