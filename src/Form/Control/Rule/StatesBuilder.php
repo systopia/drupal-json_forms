@@ -89,7 +89,11 @@ final class StatesBuilder {
    */
   private function buildCondition($value): array {
     if (is_bool($value)) {
-      return ['checked' => $value];
+      return [
+        ['checked' => $value],
+        'and',
+        ['value' => (int) $value],
+      ];
     }
 
     if (NULL === $value) {
