@@ -123,8 +123,29 @@ final class StatesArrayFactoryTest extends TestCase {
             [
               ['checked' => FALSE],
               'and',
-              ['value' => 0],
+              ['value' => '0'],
             ],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($rule)
+    );
+  }
+
+  public function testHideWithInteger(): void {
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => 12],
+      ],
+    ];
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['value' => '12'],
           ],
         ],
       ],
