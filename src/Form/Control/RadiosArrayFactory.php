@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
-use Drupal\json_forms\Form\Control\Callbacks\NumberValueCallback;
+use Drupal\json_forms\Form\Control\Callbacks\RadiosValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -49,11 +49,14 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'radios',
       '#options' => OptionsBuilder::buildOptions($definition),
+      '#value_callback' => RadiosValueCallback::class . '::convert',
+      '#_type' => $definition->getType(),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
-    if ($definition->getType() === 'number' || $definition->getType() === 'integer') {
-      $form['#value_callback'] = NumberValueCallback::class . '::convert';
-      $form['#_type'] = $definition->getType();
+    if ('boolean' === $form['#_type'] && is_bool($form['#default_value'] ?? NULL)) {
+      // If default value is actual a boolean, the corresponding radio is not
+      // selected.
+      $form['#default_value'] = $form['#default_value'] ? '1' : '0';
     }
 
     return $form;
