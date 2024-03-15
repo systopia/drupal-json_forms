@@ -92,7 +92,7 @@ final class StatesBuilder {
       return [
         ['checked' => $value],
         'and',
-        ['value' => (int) $value],
+        ['value' => $value ? '1' : '0'],
       ];
     }
 
@@ -101,7 +101,7 @@ final class StatesBuilder {
     }
 
     if (!is_array($value)) {
-      return ['value' => $value];
+      return ['value' => (string) $value];
     }
 
     $condition = [];
