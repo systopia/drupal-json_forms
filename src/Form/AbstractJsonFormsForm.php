@@ -115,7 +115,6 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $form['#attributes']['class'][] = 'json-forms';
 
     if ($recalculateOnChange) {
-      // @phpstan-ignore-next-line
       $form['#attached']['library'][] = 'json_forms/submit';
     }
 

@@ -72,12 +72,10 @@ final class SelectCallbacks {
       return $element['#default_value'] ?? NULL;
     }
 
-    // @phpstan-ignore-next-line
     if (array_key_exists('#empty_value', $element) && $input === (string) $element['#empty_value']) {
       return '' === $element['#empty_value'] ? NULL : $element['#empty_value'];
     }
 
-    // @phpstan-ignore-next-line
     foreach (array_keys($element['#options']) as $option) {
       if ($input === (string) $option) {
         return $option;
