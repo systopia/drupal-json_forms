@@ -48,17 +48,14 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition $definition */
 
     $element = [
+      '#type' => 'fieldset',
+      '#title' => $definition->getLabel(),
       '#markup' => $definition->getContent(),
+      '#attributes' => ['class' => ['json-forms-markup']],
     ];
 
-    // Only use 'item' as type if necessary, otherwise just display the markup.
-    if (NULL !== $definition->getLabel() || NULL !== $definition->getRule()) {
-      $element['#type'] = 'item';
-      $element['#input'] = FALSE;
-      $element['#title'] = $definition->getLabel();
-      if (NULL !== $definition->getRule()) {
-        $element['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
-      }
+    if (NULL !== $definition->getRule()) {
+      $element['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
     }
 
     return $element;
