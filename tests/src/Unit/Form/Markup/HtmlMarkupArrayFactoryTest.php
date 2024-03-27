@@ -79,8 +79,8 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       ->willReturn(['visible' => []]);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
     static::assertEquals([
-      '#type' => 'item',
-      '#input' => FALSE,
+      '#type' => 'fieldset',
+      '#attributes' => ['class' => ['json-forms-markup']],
       '#title' => 'Label',
       '#markup' => '<em>test</em>',
       '#states' => ['visible' => []],
@@ -98,7 +98,10 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
-    static::assertSame([
+    static::assertEquals([
+      '#type' => 'fieldset',
+      '#attributes' => ['class' => ['json-forms-markup']],
+      '#title' => NULL,
       '#markup' => '<em>test</em>',
     ], $form);
   }
