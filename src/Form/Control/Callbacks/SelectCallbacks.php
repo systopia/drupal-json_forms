@@ -34,7 +34,7 @@ final class SelectCallbacks {
   public static function validate(array $element, FormStateInterface $formState): void {
     if (0 === $element['#value'] && isset($element['#options'][0]) && $element['#required']) {
       /*
-       * 0 is treated as empty value by Drupal and validates "#required".
+       * 0 is treated as empty value by Drupal and violates "#required".
        * However if it is in the allowed options we want to accept it as valid
        * value. Limit validation errors is reset by Drupal after validating this
        * element.
