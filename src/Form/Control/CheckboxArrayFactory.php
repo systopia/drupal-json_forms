@@ -43,6 +43,7 @@ final class CheckboxArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     return [
       '#type' => 'checkbox',
+      '#required' => FALSE,
       '#value_callback' => CheckboxValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
   }
