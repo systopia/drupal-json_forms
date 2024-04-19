@@ -48,10 +48,11 @@ final class TableRowArrayFactory extends AbstractLayoutArrayFactory {
   ): array {
 
     if ($element instanceof MarkupDefinition) {
-      $label = $element->getLabel();
+      $label = $element->getMarkupSchema()->label ?? NULL;
       try {
-        // HtmlMarkupArrayFactory handles elements without label differently.
-        $element->getMarkupSchema()->label = NULL;
+        // If '#title_display' is set to 'hidden' the label should not be
+        // visible, but the HTML tags may still use some space.
+        $element->getMarkupSchema()->label = '';
 
         return parent::createElementFormArray($element, $formState, $formArrayFactory);
       }
@@ -60,16 +61,30 @@ final class TableRowArrayFactory extends AbstractLayoutArrayFactory {
       }
     }
 
-    $form = ['#title_display' => 'invisible']
-      + parent::createElementFormArray($element, $formState, $formArrayFactory);
+    if ($element instanceof ControlDefinition) {
+      $description = $element->getControlSchema()->description ?? NULL;
+      try {
+        // The module "Form Tips" brings back label and description, even if
+        // '#description_display' is set to 'invisible'. Thus, we explicitly set
+        // an empty string here.
+        $element->getControlSchema()->description = '';
+        $form = ['#title_display' => 'invisible'];
+        if ('hidden' === $element->getOptionsValue('type')) {
+          // Use no space for table cell.
+          $form['#wrapper_attributes']['style'][] = 'padding: 0;';
+        }
 
-    if ($element instanceof ControlDefinition && 'hidden' === $element->getOptionsValue('type')) {
-      // Use no space for table cell.
-      // @phpstan-ignore-next-line
-      $form['#wrapper_attributes']['style'][] = 'padding: 0;';
+        return $form + parent::createElementFormArray($element, $formState, $formArrayFactory);
+      }
+      finally {
+        $element->getControlSchema()->description = $description;
+      }
     }
 
-    return $form;
+    return [
+      '#title_display' => 'invisible',
+      '#description_display' => 'invisible',
+    ] + parent::createElementFormArray($element, $formState, $formArrayFactory);
   }
 
 }
