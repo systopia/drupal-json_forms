@@ -65,7 +65,8 @@ abstract class AbstractJsonFormsForm extends FormBase {
       $container->get(FormValidatorInterface::class), $container->get(FormValidationMapperInterface::class));
   }
 
-  public function __construct(FormArrayFactoryInterface $formArrayFactory,
+  public function __construct(
+    FormArrayFactoryInterface $formArrayFactory,
     FormValidatorInterface $formValidator,
     FormValidationMapperInterface $formValidationMapper
   ) {
@@ -94,7 +95,8 @@ abstract class AbstractJsonFormsForm extends FormBase {
    * @see FormStateInterface::setTemporary()
    * @see FormStateInterface::isCached()
    */
-  protected function buildJsonFormsForm(array $form,
+  protected function buildJsonFormsForm(
+    array $form,
     FormStateInterface $formState,
     \stdClass $jsonSchema,
     \stdClass $uiSchema,

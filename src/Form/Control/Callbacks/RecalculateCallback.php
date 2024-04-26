@@ -45,7 +45,8 @@ final class RecalculateCallback {
   /**
    * @phpstan-param array<int|string, mixed> $newData
    */
-  private static function addInvokeCommands(AjaxResponse $response,
+  private static function addInvokeCommands(
+    AjaxResponse $response,
     FormStateInterface $formState,
     array $newData
   ): void {
@@ -61,7 +62,8 @@ final class RecalculateCallback {
    * @param mixed $oldData
    * @param mixed $newData
    */
-  private static function doAddInvokeCommands(AjaxResponse $response,
+  private static function doAddInvokeCommands(
+    AjaxResponse $response,
     FormStateInterface $formState,
     $oldData,
     $newData,
