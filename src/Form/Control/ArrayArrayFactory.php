@@ -60,6 +60,11 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       'items' => [],
     ] + BasicFormPropertiesFactory::createBasicProperties($definition);
 
+    if (TRUE === $definition->getOptionsValue('closeable')) {
+      $form['#type'] = 'details';
+      $form['#open'] = $definition->getOptionsValue('open', TRUE);
+    }
+
     $propertyAccessor = FormStatePropertyAccessor::create($formState, $definition->getPropertyFormParents());
     $numItems = $propertyAccessor->getProperty('numItems');
     if (NULL === $numItems) {
