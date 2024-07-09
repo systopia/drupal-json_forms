@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Callbacks\DateValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -47,6 +48,7 @@ final class DateArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $form = [
       '#type' => 'date',
+      '#value_callback' => DateValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     // @phpstan-ignore-next-line
