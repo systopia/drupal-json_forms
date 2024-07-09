@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\Form\Control\Rule;
 
 /**
- * @phpstan-type statesT array<string, array<string, array<array<string, mixed>|'and'|'or'|'xor'>>>
+ * @phpstan-type statesT array<string, array<string|int, array<array<string, mixed>|'and'|'or'|'xor'>>>
  * @phpstan-type conditionT array{checked: bool}|array{empty: bool}|array{value: scalar}
  */
 final class StatesBuilder {
@@ -39,15 +39,21 @@ final class StatesBuilder {
     string $effect,
     string $fieldName,
     $value,
-    bool $negate
+    bool $negate,
+    bool $isContains
   ): self {
     foreach ($this->getStates($effect, $negate) as $state) {
-      $selector = '[name="' . $fieldName . '"]';
-      if (isset($this->states[$state][$selector])) {
-        $this->states[$state][$selector][] = 'and';
+      if ($isContains) {
+        $this->states[$state][] = $this->buildContainsCondition($fieldName, $value);
       }
+      else {
+        $selector = '[name="' . $fieldName . '"]';
+        if (isset($this->states[$state][$selector])) {
+          $this->states[$state][$selector][] = 'and';
+        }
 
-      $this->states[$state][$selector][] = $this->buildCondition($value);
+        $this->states[$state][$selector][] = $this->buildCondition($value);
+      }
     }
 
     return $this;
@@ -110,6 +116,34 @@ final class StatesBuilder {
         /** @phpstan-var conditionT $subCondition */
         $subCondition = $this->buildCondition($v);
         $condition[] = $subCondition;
+        $condition[] = 'or';
+      }
+    }
+    array_pop($condition);
+
+    return $condition;
+  }
+
+  /**
+   * @phpstan-param scalar|array<scalar>|null $value
+   *
+   * @phpstan-return array<string|int, conditionT|'or'>>
+   */
+  private function buildContainsCondition(string $fieldName, $value): array {
+    if (!is_array($value)) {
+      $selector = '[name="' . $fieldName . '[' . $value . ']"]';
+      return [
+        $selector => ['checked' => TRUE],
+      ];
+    }
+
+    $condition = [];
+    $value = array_unique($value);
+    foreach ($value as $v) {
+      if (!is_array($v)) {
+        /** @phpstan-var array<string, conditionT> $subCondition */
+        $subCondition = $this->buildContainsCondition($fieldName, $v);
+        $condition += $subCondition;
         $condition[] = 'or';
       }
     }

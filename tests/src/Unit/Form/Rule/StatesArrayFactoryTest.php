@@ -153,4 +153,60 @@ final class StatesArrayFactoryTest extends TestCase {
     );
   }
 
+  public function testContains(): void {
+    $rule = (object) [
+      'effect' => 'SHOW',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['contains' => (object) ['const' => 'baz']],
+      ],
+    ];
+
+    static::assertSame(
+      [
+        'visible' => [
+          [
+            '[name="foo[bar][baz]"]' => [
+              'checked' => TRUE,
+            ],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($rule)
+    );
+  }
+
+  public function testContainsEnum(): void {
+    $rule = (object) [
+      'effect' => 'SHOW',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) [
+          'contains' => (object) [
+            'enum' => ['baz1', 'baz2'],
+          ],
+        ],
+      ],
+    ];
+
+    // phpcs:disable Squiz.Arrays.ArrayDeclaration.NoKeySpecified
+    static::assertSame(
+      [
+        'visible' => [
+          [
+            '[name="foo[bar][baz1]"]' => [
+              'checked' => TRUE,
+            ],
+            'or',
+            '[name="foo[bar][baz2]"]' => [
+              'checked' => TRUE,
+            ],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($rule)
+    );
+    // phpcs:enable
+  }
+
 }

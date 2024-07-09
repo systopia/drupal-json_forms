@@ -50,24 +50,34 @@ final class StatesArrayFactory implements StatesArrayFactoryInterface {
     return FormPropertyUtil::getFormNameForPropertyPath(ScopePointer::new($scope)->getPropertyPath());
   }
 
-  private function addStates(string $effect, string $fieldName, \stdClass $schema, bool $negate = FALSE): void {
+  private function addStates(
+    string $effect,
+    string $fieldName,
+    \stdClass $schema,
+    bool $negate = FALSE,
+    bool $isContains = FALSE
+  ): void {
     if (property_exists($schema, 'not')) {
-      $this->addStates($effect, $fieldName, $schema->not, !$negate);
+      $this->addStates($effect, $fieldName, $schema->not, !$negate, $isContains);
     }
 
     if (property_exists($schema, 'const')) {
-      $this->statesBuilder->add($effect, $fieldName, $schema->const, $negate);
+      $this->statesBuilder->add($effect, $fieldName, $schema->const, $negate, $isContains);
     }
 
     if (property_exists($schema, 'enum')) {
-      $this->statesBuilder->add($effect, $fieldName, $schema->enum, $negate);
+      $this->statesBuilder->add($effect, $fieldName, $schema->enum, $negate, $isContains);
     }
 
     if (property_exists($schema, 'properties')) {
       foreach ($schema->properties as $property => $propertySchema) {
         $propertyFieldName = $fieldName . '[' . $property . ']';
-        $this->addStates($effect, $propertyFieldName, $propertySchema, $negate);
+        $this->addStates($effect, $propertyFieldName, $propertySchema, $negate, $isContains);
       }
+    }
+
+    if (property_exists($schema, 'contains')) {
+      $this->addStates($effect, $fieldName, $schema->contains, $negate, TRUE);
     }
   }
 
