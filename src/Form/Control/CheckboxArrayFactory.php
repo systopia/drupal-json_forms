@@ -42,11 +42,19 @@ final class CheckboxArrayFactory extends AbstractConcreteFormArrayFactory {
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
-    return [
+    $form = [
       '#type' => 'checkbox',
-      '#required' => FALSE,
+      '#required' => TRUE === $definition->getConst(),
       '#value_callback' => CheckboxValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    if (FALSE === $definition->getDefault() && TRUE === $definition->getConst()) {
+      // Don't initially check checkbox, if it is required, but its default is
+      // false.
+      unset($form['#value']);
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {

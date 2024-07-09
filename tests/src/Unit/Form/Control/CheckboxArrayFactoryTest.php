@@ -89,7 +89,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
     static::assertEquals($expected, $form);
   }
 
-  public function testCreateFormArray(): void {
+  public function testCreateFormArrayRequired(): void {
     $jsonSchema = (object) [
       'type' => 'object',
       'properties' => (object) [
@@ -99,6 +99,7 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
             'foo' => (object) [
               'type' => 'boolean',
               'description' => 'Test description',
+              'const' => TRUE,
             ],
           ],
           'required' => ['foo'],
@@ -123,11 +124,53 @@ final class CheckboxArrayFactoryTest extends UnitTestCase {
       '#value_callback' => CheckboxValueCallback::class . '::convert',
       '#disabled' => TRUE,
       '#required' => TRUE,
+      '#value' => TRUE,
       '#parents' => ['test', 'foo'],
       '#title' => 'Test',
       // phpcs:disable DrupalPractice.General.DescriptionT.DescriptionT
       '#description' => 'Test description',
       // phpcs:enable
+      '#tree' => TRUE,
+      '#limit_validation_errors' => [],
+      '#_scope' => '#/properties/test/properties/foo',
+    ];
+    static::assertEquals($expected, $form);
+  }
+
+  public function testCreateFormArrayRequiredDefaultFalse(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'test' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'foo' => (object) [
+              'type' => 'boolean',
+              'const' => TRUE,
+              'default' => FALSE,
+            ],
+          ],
+          'required' => ['foo'],
+        ],
+      ],
+    ];
+
+    $uiSchema = (object) [
+      'type' => 'Control',
+      'scope' => '#/properties/test/properties/foo',
+    ];
+
+    $definition = ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, FALSE);
+    $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
+
+    $expected = [
+      '#type' => 'checkbox',
+      '#value_callback' => CheckboxValueCallback::class . '::convert',
+      '#disabled' => FALSE,
+      '#required' => TRUE,
+      '#default_value' => FALSE,
+      '#parents' => ['test', 'foo'],
+      '#title' => 'Foo',
       '#tree' => TRUE,
       '#limit_validation_errors' => [],
       '#_scope' => '#/properties/test/properties/foo',
