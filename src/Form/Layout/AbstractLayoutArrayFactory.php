@@ -24,12 +24,19 @@ namespace Drupal\json_forms\Form\Layout;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
 abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFactory {
+
+  private StatesArrayFactoryInterface $statesArrayFactory;
+
+  public function __construct(StatesArrayFactoryInterface $statesArrayFactory) {
+    $this->statesArrayFactory = $statesArrayFactory;
+  }
 
   /**
    * {@inheritDoc}
@@ -42,6 +49,10 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
     Assertion::isInstanceOf($definition, LayoutDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition $definition */
     $form = $this->createBasicFormArray($definition);
+
+    if (NULL !== $definition->getRule()) {
+      $form['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
+    }
 
     return array_merge($form, $this->createElementsFormArray($definition, $formState, $formArrayFactory));
   }
