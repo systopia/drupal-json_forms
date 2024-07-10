@@ -67,6 +67,10 @@ class LayoutDefinition implements DefinitionInterface {
     return $this->layoutSchema->{$keyword} ?? $default;
   }
 
+  public function getRule(): ?\stdClass {
+    return $this->layoutSchema->rule ?? NULL;
+  }
+
   public function getType(): string {
     return $this->layoutSchema->type;
   }
