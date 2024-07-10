@@ -32,6 +32,8 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
 class ValueArrayFactory extends AbstractConcreteFormArrayFactory {
 
+  public const INTERNAL_VALUES_PROPERTY_KEY = 'internal';
+
   public static function getPriority(): int {
     return HiddenArrayFactory::getPriority() + 1;
   }
@@ -47,10 +49,28 @@ class ValueArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
 
-    return [
+    $form = [
       '#type' => 'value',
       '#value_callback' => ValueElementValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+
+    // The value is loaded from temporary values, so we have to persist it into
+    // the form state storage. Otherwise, it would get lost.
+    $formStatePropertyKey = array_merge([self::INTERNAL_VALUES_PROPERTY_KEY], $definition->getPropertyPath());
+    if ($formState->has($formStatePropertyKey)) {
+      $form['#value'] = $form['#default_value'] = $formState->get($formStatePropertyKey);
+    }
+    else {
+      if (isset($form['#default_value'])) {
+        $form['#value'] = $form['#default_value'];
+      }
+      else {
+        $form['#default_value'] ??= $form['#value'] ??= NULL;
+      }
+      $formState->set($formStatePropertyKey, $form['#default_value']);
+    }
+
+    return $form;
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
