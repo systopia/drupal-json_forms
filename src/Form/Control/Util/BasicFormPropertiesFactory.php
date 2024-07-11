@@ -52,6 +52,12 @@ final class BasicFormPropertiesFactory {
       $form['#attributes'] = ['placeholder' => $definition->getOptionsValue('placeholder')];
     }
 
+    // Custom option to hide labels, so they are not shown in the form by
+    // default, but can be used in validation errors.
+    if (TRUE === $definition->getOptionsValue('hideLabel')) {
+      $form['#title_display'] = 'invisible';
+    }
+
     return $form;
   }
 
