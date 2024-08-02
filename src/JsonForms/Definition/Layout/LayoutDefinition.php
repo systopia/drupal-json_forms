@@ -58,10 +58,7 @@ class LayoutDefinition implements DefinitionInterface {
   }
 
   /**
-   * @param string $keyword
-   * @param mixed $default
-   *
-   * @return mixed
+   * {@inheritDoc}
    */
   public function getKeywordValue(string $keyword, $default = NULL) {
     return $this->layoutSchema->{$keyword} ?? $default;
@@ -93,6 +90,9 @@ class LayoutDefinition implements DefinitionInterface {
     return $this->layoutSchema->options->{$key} ?? $default;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
     $definition = (new \ReflectionClass($this))->newInstanceWithoutConstructor();
     $definition->layoutSchema = $this->layoutSchema;
