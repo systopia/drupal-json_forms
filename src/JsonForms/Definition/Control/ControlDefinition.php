@@ -159,6 +159,13 @@ class ControlDefinition implements DefinitionInterface {
     return $this->propertySchema->enum ?? NULL;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public function getKeywordValue(string $keyword, $default = NULL) {
+    return $this->uiSchema->{$keyword} ?? $default;
+  }
+
   public function getLabel(): string {
     return $this->controlSchema->label ?? $this->propertySchema->title ?? ucfirst($this->getPropertyName());
   }
@@ -319,6 +326,9 @@ class ControlDefinition implements DefinitionInterface {
     return in_array($this->getPropertyName(), $this->objectSchema->required ?? [], TRUE);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
     if (NULL !== $this->getScopePrefix()) {
       $scopePrefix = $this->getScopePrefix() . ltrim($scopePrefix, '#');

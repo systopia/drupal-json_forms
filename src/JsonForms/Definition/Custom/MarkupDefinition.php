@@ -50,10 +50,7 @@ final class MarkupDefinition implements DefinitionInterface {
   }
 
   /**
-   * @param string $keyword
-   * @param mixed $default
-   *
-   * @return mixed
+   * {@inheritDoc}
    */
   public function getKeywordValue(string $keyword, $default = NULL) {
     return $this->markupSchema->{$keyword} ?? $default;
@@ -75,6 +72,9 @@ final class MarkupDefinition implements DefinitionInterface {
     return $this->markupSchema->type;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
     return new static($this->markupSchema);
   }

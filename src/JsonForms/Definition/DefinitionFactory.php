@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\JsonForms\Definition;
 
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
+use Drupal\json_forms\JsonForms\Definition\Custom\CustomDefinition;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
@@ -38,7 +39,8 @@ final class DefinitionFactory {
     if ('Control' === $uiSchema->type) {
       return ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, $parentUiReadonly);
     }
-    elseif ('Markup' === $uiSchema->type) {
+
+    if ('Markup' === $uiSchema->type) {
       return new MarkupDefinition($uiSchema);
     }
 
@@ -46,7 +48,7 @@ final class DefinitionFactory {
       return new LayoutDefinition($uiSchema, $jsonSchema, $parentUiReadonly);
     }
 
-    throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $uiSchema->type));
+    return new CustomDefinition($uiSchema, $jsonSchema, $parentUiReadonly);
   }
 
 }

@@ -23,12 +23,22 @@ namespace Drupal\json_forms\JsonForms\Definition;
 
 interface DefinitionInterface {
 
+  /**
+   * @param mixed $default
+   *
+   * @return mixed
+   *   The value for the given keyword in the UI schema or $default if not set.
+   */
+  public function getKeywordValue(string $keyword, $default = NULL);
+
+  public function getRule(): ?\stdClass;
+
   public function getType(): string;
 
   /**
-   * @param string $scopePrefix
-   *
    * @return static
+   *   A new definition where the given scope prefix is prepended to the scopes
+   *   of all Controls.
    */
   public function withScopePrefix(string $scopePrefix): self;
 

@@ -46,7 +46,7 @@ final class JsonConverter {
       return new \stdClass();
     }
 
-    $result = \json_decode(\json_encode($data, JSON_THROW_ON_ERROR));
+    $result = \json_decode(\json_encode($data, JSON_THROW_ON_ERROR), FALSE, 512, JSON_THROW_ON_ERROR);
     Assertion::isInstanceOf($result, \stdClass::class);
 
     return $result;
