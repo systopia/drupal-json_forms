@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\json_forms\JsonForms\Definition\Markup;
+namespace Drupal\json_forms\JsonForms\Definition\Custom;
 
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 

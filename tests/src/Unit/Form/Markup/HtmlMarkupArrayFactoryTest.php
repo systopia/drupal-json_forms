@@ -25,13 +25,13 @@ use Drupal\Core\Form\FormState;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory;
-use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
+use Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition;
 use Drupal\Tests\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @covers \Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory
- * @covers \Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition
+ * @covers \Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition
  * @group json_forms
  */
 final class HtmlMarkupArrayFactoryTest extends UnitTestCase {

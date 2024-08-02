@@ -26,8 +26,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
+use Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
-use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
 final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
 
@@ -46,7 +46,7 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, MarkupDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition $definition */
+    /** @var \Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition $definition */
 
     $element = [
       '#type' => 'fieldset',
