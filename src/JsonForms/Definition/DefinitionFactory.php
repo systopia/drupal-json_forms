@@ -23,8 +23,8 @@ namespace Drupal\json_forms\JsonForms\Definition;
 
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Custom\CustomDefinition;
+use Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
-use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
 final class DefinitionFactory {
 

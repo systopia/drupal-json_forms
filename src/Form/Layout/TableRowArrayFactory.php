@@ -24,9 +24,9 @@ namespace Drupal\json_forms\Form\Layout;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
+use Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
-use Drupal\json_forms\JsonForms\Definition\Markup\MarkupDefinition;
 
 /**
  * Creates an array for a row in a table render element.
