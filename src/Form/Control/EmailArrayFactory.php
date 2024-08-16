@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\Form\Control;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Control\Callbacks\EmailValidateCallback;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
@@ -42,6 +43,7 @@ final class EmailArrayFactory extends StringArrayFactory {
   ): array {
     return [
       '#type' => 'email',
+      '#element_validate' => [EmailValidateCallback::class . '::validate'],
     ] + parent::createFormArray($definition, $formState, $formArrayFactory);
   }
 

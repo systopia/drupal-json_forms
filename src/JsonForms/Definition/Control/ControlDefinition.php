@@ -308,6 +308,10 @@ class ControlDefinition implements DefinitionInterface {
     return $this->propertySchema->type;
   }
 
+  public function isNullable(): bool {
+    return in_array('null', (array) $this->propertySchema->type, TRUE);
+  }
+
   public function isReadOnly(): bool {
     return $this->controlSchema->options->readonly ?? $this->propertySchema->readOnly
       ?? (property_exists($this->propertySchema, '$calculate') || $this->parentUiReadonly);

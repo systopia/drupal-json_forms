@@ -71,6 +71,7 @@ final class BasicFormPropertiesFactory {
       '#disabled' => $definition->isReadOnly(),
       '#required' => $definition->isRequired(),
       '#limit_validation_errors' => [],
+      '#_nullable' => $definition->isNullable(),
     ];
 
     if ((!$formState->isCached() || $definition->isReadOnly())

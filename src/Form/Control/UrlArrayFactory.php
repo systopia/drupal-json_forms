@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Drupal\json_forms\Form\Control;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Control\Callbacks\UrlValidateCallback;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
@@ -42,6 +43,7 @@ final class UrlArrayFactory extends StringArrayFactory {
   ): array {
     return [
       '#type' => 'url',
+      '#element_validate' => [UrlValidateCallback::class . '::validate'],
     ] + parent::createFormArray($definition, $formState, $formArrayFactory);
   }
 

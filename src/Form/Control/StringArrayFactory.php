@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
+use Drupal\json_forms\Form\Control\Callbacks\StringValueCallback;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -47,6 +48,7 @@ class StringArrayFactory extends AbstractConcreteFormArrayFactory {
 
     $form = [
       '#type' => TRUE === $definition->getOptionsValue('multi', FALSE) ? 'textarea' : 'textfield',
+      '#value_callback' => StringValueCallback::class . '::convert',
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getMaxLength()) {
