@@ -52,6 +52,11 @@ final class BasicFormPropertiesFactory {
       $form['#attributes'] = ['placeholder' => $definition->getOptionsValue('placeholder')];
     }
 
+    if (NULL !== $definition->getRule()) {
+      $statesArrayFactory = new StatesArrayFactory();
+      $form['#states'] = $statesArrayFactory->createStatesArray($definition->getRule());
+    }
+
     // Custom option to hide labels, so they are not shown in the form by
     // default, but can be used in validation errors.
     if (TRUE === $definition->getOptionsValue('hideLabel')) {
@@ -101,11 +106,6 @@ final class BasicFormPropertiesFactory {
         'progress' => [],
         'disable-refocus' => TRUE,
       ];
-    }
-
-    if (NULL !== $definition->getRule()) {
-      $statesArrayFactory = new StatesArrayFactory();
-      $form['#states'] = $statesArrayFactory->createStatesArray($definition->getRule());
     }
 
     return array_merge(static::createBasicProperties($definition), $form);
