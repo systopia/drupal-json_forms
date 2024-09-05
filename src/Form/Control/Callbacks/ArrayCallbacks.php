@@ -22,7 +22,11 @@ declare(strict_types=1);
 namespace Drupal\json_forms\Form\Control\Callbacks;
 
 use Assert\Assertion;
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\json_forms\Form\Control\Callbacks\Util\RecalculateCallbackUtil;
+use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\Form\Util\FormStatePropertyAccessor;
 use Drupal\json_forms\Form\Util\FormValueAccessor;
 
@@ -69,10 +73,8 @@ final class ArrayCallbacks {
   /**
    * @param array<int|string, mixed> $form
    * @param \Drupal\Core\Form\FormStateInterface $formState
-   *
-   * @return array<int|string, mixed>
    */
-  public static function ajaxRemove(array &$form, FormStateInterface $formState): array {
+  public static function ajaxRemove(array &$form, FormStateInterface $formState): AjaxResponse {
     // Changing properties in $formState has no effect in ajax callback, so we
     // combine it with removeItem().
     $triggeringElement = $formState->getTriggeringElement();
@@ -82,7 +84,23 @@ final class ArrayCallbacks {
     $arrayForm = &self::getArrayForm($form, $triggeringElement);
     FormValueAccessor::setValue($arrayForm['items'], $propertyPath, $formState->getTemporaryValue($propertyPath));
 
-    return $arrayForm;
+    /** @var \Drupal\Core\Render\MainContent\AjaxRenderer $ajaxRenderer */
+    $ajaxRenderer = \Drupal::service('main_content_renderer.ajax');
+    /** @var \Drupal\Core\Ajax\AjaxResponse $response */
+    $response = $ajaxRenderer->renderResponse($arrayForm, \Drupal::request(), \Drupal::routeMatch());
+
+    if (TRUE === $formState->get('recalculateOnChange')) {
+      $newData = FieldNameUtil::toFormData($formState->getTemporary());
+      $oldData = $formState->getUserInput();
+      // The submitted data contains the values before removal, but the new data
+      // is part of $arrayForm so we don't need change commands for those
+      // fields.
+      NestedArray::setValue($oldData, $propertyPath, NestedArray::getValue($newData, $propertyPath));
+
+      RecalculateCallbackUtil::addAjaxCommands($response, $formState, $oldData, $newData, array_keys($newData), FALSE);
+    }
+
+    return $response;
   }
 
   /**
