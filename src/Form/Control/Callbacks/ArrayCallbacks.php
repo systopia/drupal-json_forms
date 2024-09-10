@@ -60,14 +60,33 @@ final class ArrayCallbacks {
   /**
    * @param array<int|string, mixed> $form
    * @param \Drupal\Core\Form\FormStateInterface $formState
-   *
-   * @return array<int|string, mixed>
    */
-  public static function ajaxAdd(array &$form, FormStateInterface $formState): array {
+  public static function ajaxAdd(array &$form, FormStateInterface $formState): AjaxResponse {
     $triggeringElement = $formState->getTriggeringElement();
     Assertion::isArray($triggeringElement);
 
-    return self::getArrayForm($form, $triggeringElement);
+    $arrayForm = self::getArrayForm($form, $triggeringElement);
+
+    /** @var \Drupal\Core\Render\MainContent\AjaxRenderer $ajaxRenderer */
+    $ajaxRenderer = \Drupal::service('main_content_renderer.ajax');
+    /** @var \Drupal\Core\Ajax\AjaxResponse $response */
+    $response = $ajaxRenderer->renderResponse($arrayForm, \Drupal::request(), \Drupal::routeMatch());
+
+    if (TRUE === $formState->get('recalculateOnChange')) {
+      Assertion::keyExists($triggeringElement, '#_controlPropertyPath');
+      $propertyPath = $triggeringElement['#_controlPropertyPath'];
+
+      $newData = FieldNameUtil::toFormData($formState->getTemporary());
+      $oldData = $formState->getUserInput();
+      // The submitted data contains the values before addition, but the new
+      // data is part of $arrayForm so we don't need change commands for those
+      // fields.
+      NestedArray::setValue($oldData, $propertyPath, NestedArray::getValue($newData, $propertyPath));
+
+      RecalculateCallbackUtil::addAjaxCommands($response, $formState, $oldData, $newData, array_keys($newData), FALSE);
+    }
+
+    return $response;
   }
 
   /**
