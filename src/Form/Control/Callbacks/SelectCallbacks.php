@@ -27,20 +27,12 @@ final class SelectCallbacks {
   /**
    * @phpstan-param array{
    *   '#value': scalar,
-   *   '#options': array<scalar, string>,
-   *   '#required': bool
+   *   '#options': array<string|int, string>,
+   *   '#required'?: bool
    * }&array<int|string, mixed> $element
    */
   public static function validate(array $element, FormStateInterface $formState): void {
-    if (0 === $element['#value'] && isset($element['#options'][0]) && $element['#required']) {
-      /*
-       * 0 is treated as empty value by Drupal and violates "#required".
-       * However if it is in the allowed options we want to accept it as valid
-       * value. Limit validation errors is reset by Drupal after validating this
-       * element.
-       */
-      $formState->setLimitValidationErrors([]);
-    }
+    OptionValueCallbacks::validate($element, $formState);
   }
 
   /**
@@ -50,39 +42,19 @@ final class SelectCallbacks {
    * @return mixed
    */
   public static function value(array &$element, $input, FormStateInterface $formState) {
-    $value = self::getValue($element, $input, $formState);
-
-    if (NULL === $value) {
-      // Prevent empty string as value. Drupal sets an empty string in this
-      // case if no value is set in the form state.
-      $formState->setValueForElement($element, NULL);
-    }
-
-    return $value;
-  }
-
-  /**
-   * @param array<int|string, mixed> $element
-   * @param mixed $input
-   *
-   * @return mixed
-   */
-  private static function getValue(array &$element, $input, FormStateInterface $formState) {
-    if (FALSE === $input) {
-      return $element['#default_value'] ?? NULL;
-    }
-
     if (array_key_exists('#empty_value', $element) && $input === (string) $element['#empty_value']) {
-      return '' === $element['#empty_value'] ? NULL : $element['#empty_value'];
-    }
+      $input = '' === $element['#empty_value'] ? NULL : $element['#empty_value'];
 
-    foreach (array_keys($element['#options']) as $option) {
-      if ($input === (string) $option) {
-        return $option;
+      if (NULL === $input) {
+        // Prevent empty string as value. Drupal sets an empty string in this
+        // case if no value is set in the form state.
+        $formState->setValueForElement($element, NULL);
       }
+
+      return $input;
     }
 
-    return $input;
+    return OptionValueCallbacks::value($element, $input, $formState);
   }
 
 }

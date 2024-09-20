@@ -50,6 +50,7 @@ final class SelectArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'select',
       '#options' => OptionsBuilder::buildOptions($definition),
+      '#_option_values' => OptionsBuilder::buildOptionValues($definition),
       '#value_callback' => SelectCallbacks::class . '::value',
       '#element_validate' => [SelectCallbacks::class . '::validate'],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);

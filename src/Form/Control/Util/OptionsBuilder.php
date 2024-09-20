@@ -29,25 +29,48 @@ final class OptionsBuilder {
   /**
    * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
    *
-   * @return array<scalar, string> Options for radio buttons or select fields.
+   * @return array<string|int, string>
+   *   Options for radio buttons or select fields. (Mapping of option value as
+   *   string to label. Integerish strings are treated as integer when used as
+   *   array key.)
    */
   public static function buildOptions(ControlDefinition $definition): array {
     $options = [];
     foreach (self::getEnum($definition) as $enum) {
       if (NULL !== $enum) {
-        $options[$enum] = (string) $enum;
+        $options[self::optionToString($enum)] = (string) $enum;
       }
     }
 
     foreach (self::getOneOf($definition) as $option) {
-      if (\property_exists($option, 'const')) {
-        if (NULL !== $option->const) {
-          $options[$option->const] = $option->title ?? (string) $option->const;
-        }
+      if (\property_exists($option, 'const') && NULL !== $option->const) {
+        $options[self::optionToString($option->const)] = $option->title ?? (string) $option->const;
       }
     }
 
     return $options;
+  }
+
+  /**
+   * @return array<string|int, scalar>
+   *   Mapping of option value as string to actual option value. Integerish
+   *   strings are treated as integer when used as array key.
+   */
+  public static function buildOptionValues(ControlDefinition $definition): array {
+    $optionValues = [];
+    foreach (self::getEnum($definition) as $enum) {
+      if (NULL !== $enum) {
+        $optionValues[self::optionToString($enum)] = $enum;
+      }
+    }
+
+    foreach (self::getOneOf($definition) as $option) {
+      if (\property_exists($option, 'const') && NULL !== $option->const) {
+        $optionValues[self::optionToString($option->const)] = $option->const;
+      }
+    }
+
+    return $optionValues;
   }
 
   /**
@@ -80,6 +103,19 @@ final class OptionsBuilder {
     }
 
     return $definition->getOneOf() ?? [];
+  }
+
+  /**
+   * Because the options are used in a HTML form we convert them to strings.
+   *
+   * @param scalar $option
+   */
+  private static function optionToString($option): string {
+    if (FALSE === $option) {
+      return '0';
+    }
+
+    return (string) $option;
   }
 
 }
