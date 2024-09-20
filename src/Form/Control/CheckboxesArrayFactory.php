@@ -53,6 +53,7 @@ final class CheckboxesArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition $definition */
     $form = [
       '#type' => 'checkboxes',
+      // @todo Handle non-string values and integerish strings.
       '#options' => OptionsBuilder::buildOptions($definition),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 

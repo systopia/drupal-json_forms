@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
-use Drupal\json_forms\Form\Control\Callbacks\RadiosValueCallback;
+use Drupal\json_forms\Form\Control\Callbacks\OptionValueCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
 use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
@@ -50,14 +50,19 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'radios',
       '#options' => OptionsBuilder::buildOptions($definition),
-      '#value_callback' => RadiosValueCallback::class . '::convert',
+      '#_option_values' => OptionsBuilder::buildOptionValues($definition),
+      '#value_callback' => OptionValueCallbacks::class . '::value',
+      '#element_validate' => [OptionValueCallbacks::class . '::validate'],
       '#_type' => $definition->getType(),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
-    if ('boolean' === $form['#_type'] && is_bool($form['#default_value'] ?? NULL)) {
-      // If default value is actual a boolean, the corresponding radio is not
-      // selected.
+    if (is_bool($form['#default_value'] ?? NULL)) {
+      // If default value is a boolean, the corresponding radio is not selected.
       $form['#default_value'] = $form['#default_value'] ? '1' : '0';
+    }
+    elseif (0 === ($form['#default_value'] ?? NULL)) {
+      // If default value is 0, the corresponding radio is not selected.
+      $form['#default_value'] = '0';
     }
 
     return $form;
