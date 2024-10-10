@@ -22,11 +22,11 @@ declare(strict_types=1);
 namespace Drupal\Tests\json_forms\Unit\Form\Control;
 
 use Drupal\Core\Form\FormState;
+use Drupal\Tests\UnitTestCase;
 use Drupal\json_forms\Form\Control\Callbacks\CheckboxValueCallback;
 use Drupal\json_forms\Form\Control\CheckboxArrayFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
-use Drupal\Tests\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**

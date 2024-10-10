@@ -51,8 +51,8 @@ final class JsonFormsExampleForm extends AbstractJsonFormsForm {
   public function buildForm(
     array $form,
     FormStateInterface $form_state,
-    \stdClass $jsonSchema = NULL,
-    \stdClass $uiSchema = NULL,
+    ?\stdClass $jsonSchema = NULL,
+    ?\stdClass $uiSchema = NULL,
     int $flags = 0
   ): array {
     Assertion::notNull($jsonSchema);
