@@ -48,8 +48,23 @@ final class BasicFormPropertiesFactory {
       $form['#description'] = $definition->getDescription();
     }
 
+    $form['#description_attributes']['class'][] = 'foo';
+    switch ($definition->getOptionsValue('descriptionDisplay')) {
+      case 'after':
+        $form['#description_display'] = 'after';
+        break;
+
+      case 'before':
+        $form['#description_display'] = 'before';
+        break;
+
+      case 'invisible':
+        $form['#description_display'] = 'invisible';
+        break;
+    }
+
     if (NULL !== $definition->getOptionsValue('placeholder')) {
-      $form['#attributes'] = ['placeholder' => $definition->getOptionsValue('placeholder')];
+      $form['#attributes']['placeholder'] = $definition->getOptionsValue('placeholder');
     }
 
     if (NULL !== $definition->getRule()) {
