@@ -22,11 +22,11 @@ declare(strict_types=1);
 namespace Drupal\Tests\json_forms\Unit\Form\Markup;
 
 use Drupal\Core\Form\FormState;
+use Drupal\Tests\UnitTestCase;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\Form\Markup\HtmlMarkupArrayFactory;
 use Drupal\json_forms\JsonForms\Definition\Custom\MarkupDefinition;
-use Drupal\Tests\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
