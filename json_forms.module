@@ -1,1 +1,24 @@
 <?php
+declare(strict_types=1);
+
+use Drupal\Core\Template\Attribute;
+
+function _json_forms_add_tooltip_css_class(array &$variables): void {
+  if ('tooltip' === ($variables['element']['#_json_forms_description_display'] ?? NULL)) {
+    /** @var \Drupal\Core\Template\Attribute|null $descriptionAttributes */
+    $descriptionAttributes = $variables['description']['attributes'] ?? NULL;
+    if (NULL !== $descriptionAttributes) {
+      // Add the CSS class "json-forms-description-tooltip" to the description
+      // element. This can be used to process the element with another module.
+      $descriptionAttributes->merge(new Attribute(['class' => ['json-forms-description-tooltip']]));
+    }
+  }
+}
+
+function json_forms_preprocess_form_element(array &$variables): void {
+  _json_forms_add_tooltip_css_class($variables);
+}
+
+function json_forms_preprocess_fieldset(array &$variables): void {
+  _json_forms_add_tooltip_css_class($variables);
+}

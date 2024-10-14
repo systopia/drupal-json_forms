@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Control\Util;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Control\Callbacks\RecalculateCallback;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactory;
+use Drupal\json_forms\Form\Util\DescriptionDisplayUtil;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 
 final class BasicFormPropertiesFactory {
@@ -48,20 +49,8 @@ final class BasicFormPropertiesFactory {
       $form['#description'] = $definition->getDescription();
     }
 
-    $form['#description_attributes']['class'][] = 'foo';
-    switch ($definition->getOptionsValue('descriptionDisplay')) {
-      case 'after':
-        $form['#description_display'] = 'after';
-        break;
-
-      case 'before':
-        $form['#description_display'] = 'before';
-        break;
-
-      case 'invisible':
-        $form['#description_display'] = 'invisible';
-        break;
-    }
+    // @phpstan-ignore argument.type
+    DescriptionDisplayUtil::handleDescriptionDisplay($form, $definition->getOptionsValue('descriptionDisplay'));
 
     if (NULL !== $definition->getOptionsValue('placeholder')) {
       $form['#attributes']['placeholder'] = $definition->getOptionsValue('placeholder');
