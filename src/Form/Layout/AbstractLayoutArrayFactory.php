@@ -26,6 +26,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactoryInterface;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
+use Drupal\json_forms\Form\Util\DescriptionDisplayUtil;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
@@ -49,6 +50,9 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
     Assertion::isInstanceOf($definition, LayoutDefinition::class);
     /** @var \Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition $definition */
     $form = $this->createBasicFormArray($definition);
+
+    // @phpstan-ignore argument.type
+    DescriptionDisplayUtil::handleDescriptionDisplay($form, $definition->getOptionsValue('descriptionDisplay'));
 
     if (NULL !== $definition->getRule()) {
       $form['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
