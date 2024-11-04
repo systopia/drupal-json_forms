@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Control\Util;
 use Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 
-final class OptionsBuilder {
+final class OptionsUtil {
 
   /**
    * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
@@ -71,6 +71,28 @@ final class OptionsBuilder {
     }
 
     return $optionValues;
+  }
+
+  /**
+   * @return ''|null
+   *   The actual value to use if the option with the empty value is selected.
+   */
+  public static function getEmptyOptionValue(ControlDefinition $definition): ?string {
+    $enums = self::getEnum($definition);
+    if (in_array('', $enums, TRUE)) {
+      return '';
+    }
+    if (in_array(NULL, $enums, TRUE)) {
+      return NULL;
+    }
+
+    foreach (self::getOneOf($definition) as $option) {
+      if (\property_exists($option, 'const') && (NULL === $option->const || '' === $option->const)) {
+        return $option->const;
+      }
+    }
+
+    return NULL;
   }
 
   /**

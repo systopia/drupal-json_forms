@@ -26,7 +26,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Callbacks\SelectCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
-use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
+use Drupal\json_forms\Form\Control\Util\OptionsUtil;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
@@ -49,14 +49,21 @@ final class SelectArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $form = [
       '#type' => 'select',
-      '#options' => OptionsBuilder::buildOptions($definition),
-      '#_option_values' => OptionsBuilder::buildOptionValues($definition),
+      '#options' => OptionsUtil::buildOptions($definition),
+      '#_option_values' => OptionsUtil::buildOptionValues($definition),
       '#value_callback' => SelectCallbacks::class . '::value',
       '#element_validate' => [SelectCallbacks::class . '::validate'],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
+    // #empty_value cannot be NULL, thus we use #_empty_value to allow NULL as
+    // well as an empty string.
+    $form['#_empty_value'] = OptionsUtil::getEmptyOptionValue($definition);
     if (!$definition->isRequired()) {
       $form['#empty_value'] = '';
+    }
+    // @phpstan-ignore offsetAccess.nonOffsetAccessible
+    if (isset($form['#options']['']) && '' !== $form['#options']['']) {
+      $form['#empty_option'] = $form['#options'][''];
     }
 
     return $form;

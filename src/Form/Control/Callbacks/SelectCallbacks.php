@@ -43,7 +43,7 @@ final class SelectCallbacks {
    */
   public static function value(array &$element, $input, FormStateInterface $formState) {
     if (array_key_exists('#empty_value', $element) && $input === (string) $element['#empty_value']) {
-      $input = '' === $element['#empty_value'] ? NULL : $element['#empty_value'];
+      $input = $element['#_empty_value'];
 
       if (NULL === $input) {
         // Prevent empty string as value. Drupal sets an empty string in this

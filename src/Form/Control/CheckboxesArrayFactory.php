@@ -26,7 +26,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Callbacks\CheckboxesCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
-use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
+use Drupal\json_forms\Form\Control\Util\OptionsUtil;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\Form\Util\FormCallbackRegistrator;
 use Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition;
@@ -54,7 +54,7 @@ final class CheckboxesArrayFactory extends AbstractConcreteFormArrayFactory {
     $form = [
       '#type' => 'checkboxes',
       // @todo Handle non-string values and integerish strings.
-      '#options' => OptionsBuilder::buildOptions($definition),
+      '#options' => OptionsUtil::buildOptions($definition),
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (isset($form['#default_value'])) {

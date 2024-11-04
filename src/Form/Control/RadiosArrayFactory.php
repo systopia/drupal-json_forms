@@ -26,7 +26,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\Control\Callbacks\OptionValueCallbacks;
 use Drupal\json_forms\Form\Control\Util\BasicFormPropertiesFactory;
-use Drupal\json_forms\Form\Control\Util\OptionsBuilder;
+use Drupal\json_forms\Form\Control\Util\OptionsUtil;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
@@ -49,8 +49,8 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
     /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $form = [
       '#type' => 'radios',
-      '#options' => OptionsBuilder::buildOptions($definition),
-      '#_option_values' => OptionsBuilder::buildOptionValues($definition),
+      '#options' => OptionsUtil::buildOptions($definition),
+      '#_option_values' => OptionsUtil::buildOptionValues($definition),
       '#value_callback' => OptionValueCallbacks::class . '::value',
       '#element_validate' => [OptionValueCallbacks::class . '::validate'],
       '#_type' => $definition->getType(),
