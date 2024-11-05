@@ -118,6 +118,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
 
     if ($recalculateOnChange) {
       $form['#attached']['library'][] = 'json_forms/submit';
+      $form['#attached']['library'][] = 'json_forms/vertical_tabs';
     }
 
     return $form;
