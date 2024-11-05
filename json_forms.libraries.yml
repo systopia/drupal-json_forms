@@ -17,3 +17,10 @@ submit:
     - core/drupal
     - core/jquery
     - core/once
+
+vertical_tabs:
+  version: 0.1.0
+  js:
+    js/vertical-tabs.js: {}
+  dependencies:
+    - core/jquery
