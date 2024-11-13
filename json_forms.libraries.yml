@@ -9,14 +9,12 @@ confirm:
     - core/jquery
     - core/once
 
-submit:
+disable_buttons_on_ajax:
   version: 0.1.0
   js:
-    js/submit.js: {}
+    js/disable-buttons-on-ajax.js: {}
   dependencies:
-    - core/drupal
     - core/jquery
-    - core/once
 
 vertical_tabs:
   version: 0.1.0
