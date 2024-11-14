@@ -36,7 +36,7 @@
     const buttons = document.querySelectorAll('input[data-ajax-disabled="true"]');
     buttons.forEach((button) => {
       button.disabled = false;
-      buttom.removeAttribute('data-ajax-disabled');
+      button.removeAttribute('data-ajax-disabled');
     });
 
   });
