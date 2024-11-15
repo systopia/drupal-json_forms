@@ -10,7 +10,7 @@ confirm:
     - core/once
 
 disable_buttons_on_ajax:
-  version: 0.1.0
+  version: 0.1.1
   js:
     js/disable-buttons-on-ajax.js: {}
   dependencies:
