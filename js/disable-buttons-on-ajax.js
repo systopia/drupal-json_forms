@@ -16,7 +16,7 @@
  */
 
 /**
- * Adding/removing entries to on array before a previous AJAX call has been
+ * Adding/removing entries to an array before a previous AJAX call has been
  * finished might lead to an inconsistent state. Thus, buttons are disabled
  * during AJAX calls. Additionally, form submit is not possible during AJAX
  * calls. Fields that initiate an AJAX calls are disabled until the call is
