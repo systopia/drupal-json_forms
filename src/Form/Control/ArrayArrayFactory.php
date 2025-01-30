@@ -113,7 +113,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
             '#disabled' => NULL !== $definition->getMinItems() && $numItems <= $definition->getMinItems(),
             '#value' => $definition->getOptionsValue('removeButtonLabel', 'x'),
             '#name' => $definition->getFullScope() . '_remove_' . $i,
-            '#limit_validation_errors' => TRUE,
+            '#limit_validation_errors' => [],
             '#validate' => [ArrayCallbacks::class . '::removeItem'],
             '#submit' => [],
             '#ajax' => [
@@ -133,7 +133,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
         '#type' => 'button',
         '#disabled' => NULL !== $definition->getMaxItems() && $numItems >= $definition->getMaxItems(),
         '#value' => $definition->getOptionsValue('addButtonLabel', '+'),
-        '#limit_validation_errors' => TRUE,
+        '#limit_validation_errors' => [],
         '#validate' => [ArrayCallbacks::class . '::addItem'],
         '#submit' => [],
         '#ajax' => [
