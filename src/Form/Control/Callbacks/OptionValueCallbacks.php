@@ -52,8 +52,10 @@ final class OptionValueCallbacks {
    * @return mixed
    */
   public static function value(array $element, $input, FormStateInterface $formState) {
+    $defaultUsed = FALSE;
     if (FALSE === $input) {
       $input = $element['#default_value'] ?? NULL;
+      $defaultUsed = TRUE;
     }
 
     if (NULL === $input) {
@@ -64,28 +66,11 @@ final class OptionValueCallbacks {
       return NULL;
     }
 
-    if (in_array($input, $element['#_option_values'], TRUE)
-      || self::isIntegerish($input) && in_array((int) $input, $element['#_option_values'], TRUE)
-    ) {
+    if (!$defaultUsed && is_string($input) && array_key_exists($input, $element['#_option_values'])) {
       $input = $element['#_option_values'][$input];
     }
 
     return $input;
-  }
-
-  /**
-   * @param mixed $value
-   *
-   * @return bool
-   *
-   * @phpstan-assert-if-true float|string|int $value
-   */
-  private static function isIntegerish($value): bool {
-    if (\is_string($value)) {
-      $value = \trim($value);
-    }
-
-    return \is_numeric($value) && $value == (string) $value;
   }
 
 }
