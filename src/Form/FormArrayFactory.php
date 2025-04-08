@@ -40,7 +40,9 @@ final class FormArrayFactory implements FormArrayFactoryInterface {
   }
 
   public function createFormArray(DefinitionInterface $definition, FormStateInterface $formState): array {
-    if (NULL !== $definition->getKeywordValue('$limitValidation')) {
+    if ($definition instanceof ControlDefinition
+      && NULL !== $definition->getObjectKeywordValue('$limitValidation')
+    ) {
       $formState->set('$limitValidationUsed', TRUE);
     }
 

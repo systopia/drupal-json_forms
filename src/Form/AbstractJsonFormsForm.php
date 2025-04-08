@@ -111,6 +111,10 @@ abstract class AbstractJsonFormsForm extends FormBase {
       return [];
     }
 
+    if (property_exists($jsonSchema, '$limitValidation')) {
+      $formState->set('$limitValidationUsed', TRUE);
+    }
+
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
     $form = $this->formArrayFactory->createFormArray($definition, $formState);
 
