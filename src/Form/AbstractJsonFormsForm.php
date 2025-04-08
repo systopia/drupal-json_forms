@@ -113,7 +113,13 @@ abstract class AbstractJsonFormsForm extends FormBase {
 
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
     $form = $this->formArrayFactory->createFormArray($definition, $formState);
-    // @phpstan-ignore-next-line
+
+    if (TRUE === $formState->get('$limitValidationUsed')) {
+      // Disable HTML form validation.
+      // @phpstan-ignore offsetAccess.nonOffsetAccessible
+      $form['#attributes']['novalidate'] = TRUE;
+    }
+
     $form['#attributes']['class'][] = 'json-forms';
 
     $form['#attached']['library'][] = 'json_forms/disable_buttons_on_ajax';
@@ -128,6 +134,13 @@ abstract class AbstractJsonFormsForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $formState): void {
     if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
+      if (TRUE === $formState->get('$limitValidationUsed')) {
+        // We cannot use Drupal validation errors if the form uses limited
+        // validation. They might contain errors that with the submitted data
+        // would be ignored. (Avoiding Drupal validation is not possible on form
+        // submit.)
+        $formState->clearErrors();
+      }
       parent::validateForm($form, $formState);
       FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
       $validationResult = $this->formValidator->validate(
