@@ -24,6 +24,7 @@ namespace Drupal\json_forms\Form\Validation;
 use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Util\FieldNameUtil;
+use Drupal\json_forms\Form\Util\FormValidationUtil;
 use Drupal\json_forms\Form\Util\FormValueAccessor;
 use Opis\JsonSchema\JsonPointer;
 
@@ -40,8 +41,13 @@ final class FormValidationMapper implements FormValidationMapperInterface {
     foreach ($validationResult->getLeafErrorMessages() as $pointer => $messages) {
       $pointer = JsonPointer::parse($pointer);
       Assertion::notNull($pointer);
-      // @phpstan-ignore-next-line
-      $element = ['#parents' => FieldNameUtil::toFormParents($pointer->absolutePath())];
+      $element = [
+        '#parents' => FormValidationUtil::getFormErrorMapping(
+          $formState,
+          // @phpstan-ignore argument.type
+          FieldNameUtil::toFormParents($pointer->absolutePath())
+        ),
+      ];
       $formState->setError($element, implode("\n", $messages));
     }
   }

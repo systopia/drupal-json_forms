@@ -25,6 +25,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\Form\Util\FormCallbackExecutor;
+use Drupal\json_forms\Form\Util\FormValidationUtil;
 use Drupal\json_forms\Form\Validation\FormValidationMapperInterface;
 use Drupal\json_forms\Form\Validation\FormValidatorInterface;
 use Drupal\json_forms\JsonForms\Definition\DefinitionFactory;
@@ -137,16 +138,28 @@ abstract class AbstractJsonFormsForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $formState
    */
   public function validateForm(array &$form, FormStateInterface $formState): void {
+    parent::validateForm($form, $formState);
+    FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
+
     if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
       if (TRUE === $formState->get('$limitValidationUsed')) {
         // We cannot use Drupal validation errors if the form uses limited
         // validation. They might contain errors that with the submitted data
         // would be ignored. (Avoiding Drupal validation is not possible on form
         // submit.)
+        $keepFormErrorElementKeys = FormValidationUtil::getKeepFormErrorElementKeys($formState);
+        $keepFormErrors = array_map(
+          fn (array $elementKey) => $formState->getError(['#parents' => $elementKey]),
+          $keepFormErrorElementKeys
+        );
         $formState->clearErrors();
+        foreach ($keepFormErrorElementKeys as $index => $elementKey) {
+          if (NULL !== $keepFormErrors[$index]) {
+            $element = ['#parents' => $elementKey];
+            $formState->setError($element, $keepFormErrors[$index]);
+          }
+        }
       }
-      parent::validateForm($form, $formState);
-      FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
       $validationResult = $this->formValidator->validate(
         // @phpstan-ignore-next-line
         $formState->get('jsonSchema'),
