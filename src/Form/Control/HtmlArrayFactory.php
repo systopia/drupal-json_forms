@@ -55,7 +55,7 @@ class HtmlArrayFactory extends AbstractConcreteFormArrayFactory {
 
     $form = [
       '#type' => 'text_format',
-      '#value_callback' => StringValueCallback::class . '::convert',
+      '#value_callback' => [StringValueCallback::class, 'convert'],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getMaxLength()) {
