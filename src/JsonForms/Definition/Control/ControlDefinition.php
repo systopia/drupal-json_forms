@@ -42,6 +42,8 @@ class ControlDefinition implements DefinitionInterface {
 
   protected \stdClass $propertySchema;
 
+  private DefinitionInterface $rootDefinition;
+
   private ?string $scopePrefix;
 
   /**
@@ -54,6 +56,7 @@ class ControlDefinition implements DefinitionInterface {
       $definition->controlSchema,
       $definition->objectSchema,
       $definition->parentUiReadonly,
+      $definition->rootDefinition,
       $definition->scopePrefix
     );
   }
@@ -62,11 +65,14 @@ class ControlDefinition implements DefinitionInterface {
    * @param \stdClass $controlSchema
    * @param \stdClass $jsonSchema
    *
-   * @return static
-   *
    * @throws \InvalidArgumentException
    */
-  public static function fromJsonSchema(\stdClass $controlSchema, \stdClass $jsonSchema, bool $parentUiReadonly): self {
+  public static function fromJsonSchema(
+    \stdClass $controlSchema,
+    \stdClass $jsonSchema,
+    bool $parentUiReadonly,
+    ?DefinitionInterface $rootDefinition
+  ): self {
     if ('#/' === $controlSchema->scope) {
       $objectSchema = (object) [
         'properties' => (object) [
@@ -79,20 +85,36 @@ class ControlDefinition implements DefinitionInterface {
       $objectSchema = $objectPointer->getSchema($jsonSchema);
     }
 
-    return new static($controlSchema, $objectSchema, $parentUiReadonly);
+    return static::fromObjectSchema($controlSchema, $objectSchema, $parentUiReadonly, $rootDefinition);
+  }
+
+  public static function fromObjectSchema(
+    \stdClass $controlSchema,
+    \stdClass $objectSchema,
+    bool $parentUiReadonly,
+    ?DefinitionInterface $rootDefinition
+  ): self {
+    $definition = new static($controlSchema, $objectSchema, $parentUiReadonly, $rootDefinition);
+    if ('object' === $definition->getType()) {
+      return ObjectControlDefinition::fromDefinition($definition);
+    }
+
+    return $definition;
   }
 
   public function __construct(
     \stdClass $controlSchema,
     \stdClass $objectSchema,
     bool $parentUiReadonly,
+    ?DefinitionInterface $rootDefinition,
     ?string $scopePrefix = NULL
   ) {
     $this->controlSchema = $controlSchema;
     $this->objectSchema = $objectSchema;
     $this->parentUiReadonly = $parentUiReadonly;
+    $this->rootDefinition = $rootDefinition ?? $this;
     $this->scopePrefix = $scopePrefix;
-    $propertySchema = $this->objectSchema->properties->{$this->getPropertyName()};
+    $propertySchema = $this->objectSchema->properties->{$this->getPropertyName()} ?? NULL;
     Assertion::notNull(
       $propertySchema,
       sprintf('Property schema for "%s" is missing.', $this->getFullScope()),
@@ -262,6 +284,10 @@ class ControlDefinition implements DefinitionInterface {
     return $this->propertySchema;
   }
 
+  public function getRootDefinition(): DefinitionInterface {
+    return $this->rootDefinition;
+  }
+
   public function getRule(): ?\stdClass {
     return $this->controlSchema->rule ?? NULL;
   }
@@ -338,7 +364,9 @@ class ControlDefinition implements DefinitionInterface {
       $scopePrefix = $this->getScopePrefix() . ltrim($scopePrefix, '#');
     }
 
-    return new static($this->controlSchema, $this->objectSchema, $this->parentUiReadonly, $scopePrefix);
+    return new static(
+      $this->controlSchema, $this->objectSchema, $this->parentUiReadonly, $this->rootDefinition, $scopePrefix
+    );
   }
 
 }

@@ -32,6 +32,7 @@ use Drupal\json_forms\Form\Util\FormStatePropertyAccessor;
 use Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
+use Drupal\json_forms\JsonForms\Definition\Layout\ArrayLayoutDefinition;
 use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
 final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
@@ -185,7 +186,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     return $header;
   }
 
-  private function createLayoutDefinition(ArrayControlDefinition $definition): LayoutDefinition {
+  private function createLayoutDefinition(ArrayControlDefinition $definition): ArrayLayoutDefinition {
     // Note: We actually do not use "detail" as it is described in JSON Forms:
     // https://jsonforms.io/docs/uischema/controls#the-detail-option
     // Should we use another option name instead?
@@ -200,7 +201,9 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     Assertion::isInstanceOf($items, \stdClass::class);
     $arrayUiSchema->elements ??= $this->createElementSchemas($items);
 
-    return new LayoutDefinition($arrayUiSchema, $items, $definition->isUiReadonly());
+    return new ArrayLayoutDefinition(
+      $arrayUiSchema, $items, $definition->isUiReadonly(), $definition->getRootDefinition()
+    );
   }
 
   /**

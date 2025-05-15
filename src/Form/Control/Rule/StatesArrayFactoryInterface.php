@@ -21,11 +21,13 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Control\Rule;
 
+use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
+
 interface StatesArrayFactoryInterface {
 
   /**
    * @phpstan-return array<string, mixed>
    */
-  public function createStatesArray(\stdClass $rule): array;
+  public function createStatesArray(DefinitionInterface $definition): array;
 
 }

@@ -21,9 +21,24 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Control;
 
+use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
+use Drupal\json_forms\JsonForms\Definition\Layout\ObjectLayoutDefinition;
 use Drupal\json_forms\Util\ConvertUtil;
 
 final class ObjectControlDefinition extends ControlDefinition {
+
+  private ObjectLayoutDefinition $layoutDefinition;
+
+  public function __construct(
+    \stdClass $controlSchema,
+    \stdClass $objectSchema,
+    bool $parentUiReadonly,
+    ?DefinitionInterface $rootDefinition,
+    ?string $scopePrefix = NULL
+  ) {
+    parent::__construct($controlSchema, $objectSchema, $parentUiReadonly, $rootDefinition, $scopePrefix);
+    $this->layoutDefinition = ObjectLayoutDefinition::fromDefinition($this);
+  }
 
   public function getMaxProperties(): ?int {
     return ConvertUtil::stdClassToNull($this->propertySchema->maxProperties ?? NULL);
@@ -49,6 +64,13 @@ final class ObjectControlDefinition extends ControlDefinition {
 
   public function getDependentRequired(): ?\stdClass {
     return $this->propertySchema->dependentRequired ?? NULL;
+  }
+
+  /**
+   * A layout definition containing controls for each object property.
+   */
+  public function getLayoutDefinition(): ObjectLayoutDefinition {
+    return $this->layoutDefinition;
   }
 
 }

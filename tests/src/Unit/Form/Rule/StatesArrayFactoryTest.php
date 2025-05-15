@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\json_forms\Unit\Form\Rule;
 
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactory;
+use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,6 +38,23 @@ final class StatesArrayFactoryTest extends TestCase {
   }
 
   public function testHide(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'string',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'HIDE',
       'condition' => (object) [
@@ -44,6 +62,11 @@ final class StatesArrayFactoryTest extends TestCase {
         'schema' => (object) ['const' => 'bar'],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     static::assertSame(
       [
@@ -53,11 +76,28 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testNotHide(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'string',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'HIDE',
       'condition' => (object) [
@@ -65,6 +105,11 @@ final class StatesArrayFactoryTest extends TestCase {
         'schema' => (object) ['not' => (object) ['const' => 'bar']],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     static::assertSame(
       [
@@ -74,11 +119,28 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testShowEnum(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'string',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'SHOW',
       'condition' => (object) [
@@ -86,6 +148,11 @@ final class StatesArrayFactoryTest extends TestCase {
         'schema' => (object) ['enum' => ['foo', 'bar']],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     static::assertSame(
       [
@@ -99,40 +166,75 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testProperties(): void {
-    $rule = (object) [
-      'effect' => 'ENABLE',
-      'condition' => (object) [
-        'scope' => '#/properties/foo/properties/bar',
-        'schema' => (object) [
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
           'properties' => (object) [
-            'baz' => (object) ['const' => FALSE],
+            'bar' => (object) [
+              'type' => 'string',
+            ],
           ],
         ],
       ],
     ];
 
-    static::assertSame(
-      [
-        'enabled' => [
-          '[name="foo[bar][baz]"]' => [
-            [
-              ['checked' => FALSE],
-              'and',
-              ['value' => '0'],
-            ],
+    $rule = (object) [
+      'effect' => 'ENABLE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo',
+        'schema' => (object) [
+          'properties' => (object) [
+            'bar' => (object) ['const' => 'test'],
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+    ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'enabled' => [
+          '[name="foo[bar]"]' => [
+            ['value' => 'test'],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testHideWithInteger(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'string',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'HIDE',
       'condition' => (object) [
@@ -140,6 +242,11 @@ final class StatesArrayFactoryTest extends TestCase {
         'schema' => (object) ['const' => 12],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     static::assertSame(
       [
@@ -149,11 +256,28 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testContains(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'array',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'SHOW',
       'condition' => (object) [
@@ -161,6 +285,11 @@ final class StatesArrayFactoryTest extends TestCase {
         'schema' => (object) ['contains' => (object) ['const' => 'baz']],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     static::assertSame(
       [
@@ -172,11 +301,28 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
   }
 
   public function testContainsEnum(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'array',
+            ],
+          ],
+        ],
+      ],
+    ];
+
     $rule = (object) [
       'effect' => 'SHOW',
       'condition' => (object) [
@@ -188,6 +334,11 @@ final class StatesArrayFactoryTest extends TestCase {
         ],
       ],
     ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
 
     // phpcs:disable Squiz.Arrays.ArrayDeclaration.NoKeySpecified
     static::assertSame(
@@ -204,9 +355,227 @@ final class StatesArrayFactoryTest extends TestCase {
           ],
         ],
       ],
-      $this->factory->createStatesArray($rule)
+      $this->factory->createStatesArray($conditionedDefinition)
     );
     // phpcs:enable
+  }
+
+  /**
+   * @param array<string, mixed> $extraReferencedControlKeywords
+   */
+  private function createUiSchema(\stdClass $rule, array $extraReferencedControlKeywords = []): \stdClass {
+    return (object) [
+      'type' => 'test',
+      'elements' => [
+        (object) [
+          'type' => 'Control',
+          'scope' => '#/properties/conditioned',
+          'rule' => $rule,
+        ],
+        (object) ([
+          'type' => 'Control',
+          'scope' => '#/properties/foo/properties/bar',
+        ] + $extraReferencedControlKeywords),
+      ],
+    ];
+  }
+
+  public function testBoolWithCheckbox(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'boolean',
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    // Test with TRUE.
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => TRUE],
+      ],
+    ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['checked' => TRUE],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
+    );
+
+    // Test with FALSE.
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => FALSE],
+      ],
+    ];
+    $uiSchema = $this->createUiSchema($rule);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['checked' => FALSE],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
+    );
+  }
+
+  public function testBoolWithRadios(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'boolean',
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    // Test with TRUE.
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => TRUE],
+      ],
+    ];
+    $uiSchema = $this->createUiSchema($rule, ['options' => (object) ['format' => 'radio']]);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['value' => '1'],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
+    );
+
+    // Test with FALSE.
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => FALSE],
+      ],
+    ];
+    $uiSchema = $this->createUiSchema($rule, ['options' => (object) ['format' => 'radio']]);
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['value' => '0'],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
+    );
+  }
+
+  /**
+   * The UI schema doesn't contain the referenced control, but a control for an
+   * object that implicitly contains the control.
+   */
+  public function testWithObject(): void {
+    $jsonSchema = (object) [
+      'type' => 'object',
+      'properties' => (object) [
+        'conditioned' => (object) [
+          'type' => 'string',
+        ],
+        'foo' => (object) [
+          'type' => 'object',
+          'properties' => (object) [
+            'bar' => (object) [
+              'type' => 'string',
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    $rule = (object) [
+      'effect' => 'HIDE',
+      'condition' => (object) [
+        'scope' => '#/properties/foo/properties/bar',
+        'schema' => (object) ['const' => 'bar'],
+      ],
+    ];
+    $uiSchema = (object) [
+      'type' => 'test',
+      'elements' => [
+        (object) [
+          'type' => 'Control',
+          'scope' => '#/properties/conditioned',
+          'rule' => $rule,
+        ],
+        (object) [
+          'type' => 'Control',
+          'scope' => '#/properties/foo',
+        ],
+      ],
+    ];
+
+    $definition = new LayoutDefinition($uiSchema, $jsonSchema, FALSE, NULL);
+    $conditionedDefinition = $definition->findControlDefinition('#/properties/conditioned');
+    static::assertNotNull($conditionedDefinition);
+
+    static::assertSame(
+      [
+        'invisible' => [
+          '[name="foo[bar]"]' => [
+            ['value' => 'bar'],
+          ],
+        ],
+      ],
+      $this->factory->createStatesArray($conditionedDefinition)
+    );
   }
 
 }

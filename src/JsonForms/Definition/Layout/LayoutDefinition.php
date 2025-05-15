@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\JsonForms\Definition\Layout;
 
+use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
+use Drupal\json_forms\JsonForms\Definition\Control\ObjectControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionFactory;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
@@ -35,14 +37,22 @@ class LayoutDefinition implements DefinitionInterface {
 
   private bool $parentUiReadonly;
 
+  private DefinitionInterface $rootDefinition;
+
   /**
    * @throws \InvalidArgumentException
    */
-  public function __construct(\stdClass $layoutSchema, \stdClass $jsonSchema, bool $parentUiReadonly) {
+  public function __construct(
+    \stdClass $layoutSchema,
+    \stdClass $jsonSchema,
+    bool $parentUiReadonly,
+    ?DefinitionInterface $rootDefinition
+  ) {
     $this->layoutSchema = $layoutSchema;
     $this->parentUiReadonly = $parentUiReadonly;
+    $this->rootDefinition = $rootDefinition ?? $this;
     foreach ($this->layoutSchema->elements as $element) {
-      $this->elements[] = DefinitionFactory::createDefinition($element, $jsonSchema, $this->isReadonly());
+      $this->elements[] = $this->createElement($element, $jsonSchema);
     }
   }
 
@@ -62,6 +72,10 @@ class LayoutDefinition implements DefinitionInterface {
    */
   public function getKeywordValue(string $keyword, $default = NULL) {
     return $this->layoutSchema->{$keyword} ?? $default;
+  }
+
+  public function getRootDefinition(): DefinitionInterface {
+    return $this->rootDefinition;
   }
 
   public function getRule(): ?\stdClass {
@@ -90,18 +104,46 @@ class LayoutDefinition implements DefinitionInterface {
     return $this->layoutSchema->options->{$key} ?? $default;
   }
 
+  public function findControlDefinition(string $scope): ?ControlDefinition {
+    foreach ($this->elements as $element) {
+      if ($element instanceof ControlDefinition) {
+        if ($element->getScope() === $scope) {
+          return $element;
+        }
+
+        if ($element instanceof ObjectControlDefinition && str_starts_with($scope, $element->getScope() . '/')) {
+          return $element->getLayoutDefinition()->findControlDefinition($scope);
+        }
+      }
+      elseif ($element instanceof LayoutDefinition) {
+        if (NULL !== ($controlDefinition = $element->findControlDefinition($scope))) {
+          return $controlDefinition;
+        }
+      }
+    }
+
+    return NULL;
+  }
+
   /**
    * {@inheritDoc}
    */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
-    $definition = (new \ReflectionClass($this))->newInstanceWithoutConstructor();
-    $definition->layoutSchema = $this->layoutSchema;
+    $definition = clone $this;
+    $definition->elements = [];
 
     foreach ($this->elements as $element) {
       $definition->elements[] = $element->withScopePrefix($scopePrefix);
     }
 
     return $definition;
+  }
+
+  /**
+   * @throws \InvalidArgumentException
+   */
+  protected function createElement(\stdClass $element, \stdClass $jsonSchema): DefinitionInterface {
+    return DefinitionFactory::createChildDefinition($element, $jsonSchema, $this->isReadonly(), $this->rootDefinition);
   }
 
 }

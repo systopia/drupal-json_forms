@@ -21,6 +21,10 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Control\Rule;
 
+use Drupal\json_forms\Form\Control\Util\FormPropertyUtil;
+use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
+use Drupal\json_forms\JsonForms\ScopePointer;
+
 /**
  * @phpstan-type statesT array<string, array<string|int, array<array<string, mixed>|'and'|'or'|'xor'>>>
  * @phpstan-type conditionT array{checked: bool}|array{empty: bool}|array{value: scalar}
@@ -37,11 +41,12 @@ final class StatesBuilder {
    */
   public function add(
     string $effect,
-    string $fieldName,
+    ControlDefinition $definition,
     $value,
     bool $negate,
     bool $isContains
   ): self {
+    $fieldName = $this->getFieldName($definition->getFullScope());
     foreach ($this->getStates($effect, $negate) as $state) {
       if ($isContains) {
         $this->states[$state][] = $this->buildContainsCondition($fieldName, $value);
@@ -52,7 +57,7 @@ final class StatesBuilder {
           $this->states[$state][$selector][] = 'and';
         }
 
-        $this->states[$state][$selector][] = $this->buildCondition($value);
+        $this->states[$state][$selector][] = $this->buildCondition($definition, $value);
       }
     }
 
@@ -61,6 +66,13 @@ final class StatesBuilder {
 
   public function clear(): void {
     $this->states = [];
+  }
+
+  /**
+   * @phpstan-return statesT
+   */
+  public function toArray(): array {
+    return $this->states;
   }
 
   /**
@@ -88,40 +100,51 @@ final class StatesBuilder {
     }
   }
 
+  private function getFieldName(string $scope): string {
+    return '#' === $scope ? ''
+      : FormPropertyUtil::getFormNameForPropertyPath(ScopePointer::new($scope)->getPropertyPath());
+  }
+
   /**
    * @phpstan-param scalar|array<scalar>|null $value
    *
    * @phpstan-return conditionT|array<conditionT|'or'>
    */
-  private function buildCondition($value): array {
+  private function buildCondition(ControlDefinition $definition, $value): array {
+    if (is_array($value)) {
+      $condition = [];
+      foreach ($value as $v) {
+        if (!is_array($v)) {
+          /** @phpstan-var conditionT $subCondition */
+          $subCondition = $this->buildCondition($definition, $v);
+          $condition[] = $subCondition;
+          $condition[] = 'or';
+        }
+      }
+      array_pop($condition);
+
+      return $condition;
+    }
+
     if (is_bool($value)) {
+      if ('boolean' === $definition->getType() && 'radio' !== $definition->getControlFormat()) {
+        // checkbox.
+        return ['checked' => $value];
+      }
+
+      return ['value' => $value ? '1' : '0'];
+    }
+
+    $value = (string) $value;
+    if ('' === $value) {
       return [
-        ['checked' => $value],
-        'and',
-        ['value' => $value ? '1' : '0'],
+        ['empty' => TRUE],
+        'or',
+        ['value' => $value],
       ];
     }
 
-    if (NULL === $value) {
-      return ['empty' => TRUE];
-    }
-
-    if (!is_array($value)) {
-      return ['value' => (string) $value];
-    }
-
-    $condition = [];
-    foreach ($value as $v) {
-      if (!is_array($v)) {
-        /** @phpstan-var conditionT $subCondition */
-        $subCondition = $this->buildCondition($v);
-        $condition[] = $subCondition;
-        $condition[] = 'or';
-      }
-    }
-    array_pop($condition);
-
-    return $condition;
+    return ['value' => $value];
   }
 
   /**
@@ -150,13 +173,6 @@ final class StatesBuilder {
     array_pop($condition);
 
     return $condition;
-  }
-
-  /**
-   * @phpstan-return statesT
-   */
-  public function toArray(): array {
-    return $this->states;
   }
 
 }

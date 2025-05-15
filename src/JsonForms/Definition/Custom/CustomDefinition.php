@@ -29,16 +29,24 @@ use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
  */
 final class CustomDefinition implements DefinitionInterface {
 
+  private DefinitionInterface $rootDefinition;
+
   private \stdClass $uiSchema;
 
   private \stdClass $jsonSchema;
 
   private bool $parentReadonly;
 
-  public function __construct(\stdClass $uiSchema, \stdClass $jsonSchema, bool $parentReadonly) {
+  public function __construct(
+    \stdClass $uiSchema,
+    \stdClass $jsonSchema,
+    bool $parentReadonly,
+    ?DefinitionInterface $rootDefinition
+  ) {
     $this->uiSchema = $uiSchema;
     $this->jsonSchema = $jsonSchema;
     $this->parentReadonly = $parentReadonly;
+    $this->rootDefinition = $rootDefinition ?? $this;
   }
 
   /**
@@ -54,6 +62,10 @@ final class CustomDefinition implements DefinitionInterface {
 
   public function getUiSchema(): \stdClass {
     return $this->uiSchema;
+  }
+
+  public function getRootDefinition(): DefinitionInterface {
+    return $this->rootDefinition;
   }
 
   public function getRule(): ?\stdClass {
@@ -72,7 +84,7 @@ final class CustomDefinition implements DefinitionInterface {
    * {@inheritDoc}
    */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
-    return new static($this->uiSchema, $this->jsonSchema, $this->parentReadonly);
+    return new static($this->uiSchema, $this->jsonSchema, $this->parentReadonly, $this->rootDefinition);
   }
 
 }

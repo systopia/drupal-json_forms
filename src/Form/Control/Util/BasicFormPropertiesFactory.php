@@ -58,7 +58,7 @@ final class BasicFormPropertiesFactory {
 
     if (NULL !== $definition->getRule()) {
       $statesArrayFactory = new StatesArrayFactory();
-      $form['#states'] = $statesArrayFactory->createStatesArray($definition->getRule());
+      $form['#states'] = $statesArrayFactory->createStatesArray($definition);
     }
 
     // Custom option to hide labels, so they are not shown in the form by

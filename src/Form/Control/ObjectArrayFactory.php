@@ -25,10 +25,8 @@ use Assert\Assertion;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\AbstractConcreteFormArrayFactory;
 use Drupal\json_forms\Form\FormArrayFactoryInterface;
-use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\Control\ObjectControlDefinition;
 use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
-use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
 final class ObjectArrayFactory extends AbstractConcreteFormArrayFactory {
 
@@ -40,39 +38,13 @@ final class ObjectArrayFactory extends AbstractConcreteFormArrayFactory {
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
   ): array {
-    Assertion::isInstanceOf($definition, ControlDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
-    $definition = ObjectControlDefinition::fromDefinition($definition);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ObjectControlDefinition $definition */
+    Assertion::isInstanceOf($definition, ObjectControlDefinition::class);
 
-    $layoutSchema = $this->createLayoutSchema($definition);
-    $layoutDefinition = new LayoutDefinition(
-      $layoutSchema,
-      $definition->getPropertySchema(),
-      $definition->isUiReadonly()
-    );
-
-    return $formArrayFactory->createFormArray($layoutDefinition, $formState);
+    return $formArrayFactory->createFormArray($definition->getLayoutDefinition(), $formState);
   }
 
   public function supportsDefinition(DefinitionInterface $definition): bool {
-    return $definition instanceof ControlDefinition && 'object' === $definition->getType();
-  }
-
-  private function createLayoutSchema(ObjectControlDefinition $definition): \stdClass {
-    $layoutSchema = (object) [
-      'type' => 'VerticalLayout',
-      'elements' => [],
-    ];
-
-    foreach ($definition->getProperties() as $propertyName => $propertySchema) {
-      $layoutSchema->elements[] = (object) [
-        'type' => 'Control',
-        'scope' => '#/properties/' . $propertyName,
-      ];
-    }
-
-    return $layoutSchema;
+    return $definition instanceof ObjectControlDefinition;
   }
 
 }

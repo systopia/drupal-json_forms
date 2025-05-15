@@ -37,8 +37,11 @@ final class MarkupDefinition implements DefinitionInterface {
 
   private \stdClass $markupSchema;
 
-  public function __construct(\stdClass $markupSchema) {
+  private DefinitionInterface $rootDefinition;
+
+  public function __construct(\stdClass $markupSchema, ?DefinitionInterface $rootDefinition) {
     $this->markupSchema = $markupSchema;
+    $this->rootDefinition = $rootDefinition ?? $this;
   }
 
   public function getContent(): string {
@@ -64,6 +67,10 @@ final class MarkupDefinition implements DefinitionInterface {
     return $this->markupSchema;
   }
 
+  public function getRootDefinition(): DefinitionInterface {
+    return $this->rootDefinition;
+  }
+
   public function getRule(): ?\stdClass {
     return $this->markupSchema->rule ?? NULL;
   }
@@ -76,7 +83,7 @@ final class MarkupDefinition implements DefinitionInterface {
    * {@inheritDoc}
    */
   public function withScopePrefix(string $scopePrefix): DefinitionInterface {
-    return new static($this->markupSchema);
+    return new static($this->markupSchema, $this->rootDefinition);
   }
 
 }

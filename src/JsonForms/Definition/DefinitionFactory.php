@@ -34,21 +34,34 @@ final class DefinitionFactory {
   public static function createDefinition(
     \stdClass $uiSchema,
     \stdClass $jsonSchema,
-    bool $parentUiReadonly = FALSE
+    bool $parentUiReadonly = FALSE,
+    ?DefinitionInterface $rootDefinition = NULL,
   ): DefinitionInterface {
     if ('Control' === $uiSchema->type) {
-      return ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, $parentUiReadonly);
+      return ControlDefinition::fromJsonSchema($uiSchema, $jsonSchema, $parentUiReadonly, $rootDefinition);
     }
 
     if ('Markup' === $uiSchema->type) {
-      return new MarkupDefinition($uiSchema);
+      return new MarkupDefinition($uiSchema, $rootDefinition);
     }
 
     if (property_exists($uiSchema, 'elements')) {
-      return new LayoutDefinition($uiSchema, $jsonSchema, $parentUiReadonly);
+      return new LayoutDefinition($uiSchema, $jsonSchema, $parentUiReadonly, $rootDefinition);
     }
 
-    return new CustomDefinition($uiSchema, $jsonSchema, $parentUiReadonly);
+    return new CustomDefinition($uiSchema, $jsonSchema, $parentUiReadonly, $rootDefinition);
+  }
+
+  /**
+   * @throws \InvalidArgumentException
+   */
+  public static function createChildDefinition(
+    \stdClass $uiSchema,
+    \stdClass $jsonSchema,
+    bool $parentUiReadonly,
+    DefinitionInterface $rootDefinition,
+  ): DefinitionInterface {
+    return self::createDefinition($uiSchema, $jsonSchema, $parentUiReadonly, $rootDefinition);
   }
 
 }
