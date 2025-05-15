@@ -21,9 +21,22 @@ declare(strict_types=1);
 
 namespace Drupal\json_forms\Form\Control\Rule;
 
-use Drupal\json_forms\Form\Control\Util\FormPropertyUtil;
-use Drupal\json_forms\JsonForms\ScopePointer;
+use Drupal\json_forms\JsonForms\Definition\Control\ObjectControlDefinition;
+use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
+use Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition;
 
+/**
+ * This class tries to create a Drupal states array from a JSON Forms rule.
+ * Though, not everything in a condition schema can be mapped to Drupal
+ * functionality.
+ *
+ * Note: In JSON Forms controls inside of arrays cannot reference properties
+ * outside of that array.
+ * See: https://github.com/eclipsesource/jsonforms/issues/2094.
+ *
+ * @see https://jsonforms.io/docs/uischema/rules
+ * @see https://www.drupal.org/docs/drupal-apis/form-api/conditional-form-fields
+ */
 final class StatesArrayFactory implements StatesArrayFactoryInterface {
 
   private StatesBuilder $statesBuilder;
@@ -35,49 +48,72 @@ final class StatesArrayFactory implements StatesArrayFactoryInterface {
   /**
    * @phpstan-return array<string, mixed>
    */
-  public function createStatesArray(\stdClass $rule): array {
+  public function createStatesArray(DefinitionInterface $definition): array {
+    $rule = $definition->getRule();
+    if (NULL === $rule) {
+      return [];
+    }
+
+    $rootDefinition = $definition->getRootDefinition();
+    if ($rootDefinition instanceof ObjectControlDefinition) {
+      $rootDefinition = $rootDefinition->getLayoutDefinition();
+    }
+    elseif (!$rootDefinition instanceof LayoutDefinition) {
+      return [];
+    }
+
     $this->statesBuilder->clear();
     $this->addStates(
       $rule->effect,
-      $this->getFieldName($rule->condition->scope),
-      $rule->condition->schema,
+      $rootDefinition,
+      $rule->condition->scope,
+      $rule->condition->schema
     );
 
     return $this->statesBuilder->toArray();
   }
 
-  private function getFieldName(string $scope): string {
-    return FormPropertyUtil::getFormNameForPropertyPath(ScopePointer::new($scope)->getPropertyPath());
-  }
-
   private function addStates(
     string $effect,
-    string $fieldName,
-    \stdClass $schema,
+    LayoutDefinition $rootDefinition,
+    string $scope,
+    \stdClass $conditionSchema,
     bool $negate = FALSE,
     bool $isContains = FALSE
   ): void {
-    if (property_exists($schema, 'not')) {
-      $this->addStates($effect, $fieldName, $schema->not, !$negate, $isContains);
-    }
-
-    if (property_exists($schema, 'const')) {
-      $this->statesBuilder->add($effect, $fieldName, $schema->const, $negate, $isContains);
-    }
-
-    if (property_exists($schema, 'enum')) {
-      $this->statesBuilder->add($effect, $fieldName, $schema->enum, $negate, $isContains);
-    }
-
-    if (property_exists($schema, 'properties')) {
-      foreach ($schema->properties as $property => $propertySchema) {
-        $propertyFieldName = $fieldName . '[' . $property . ']';
-        $this->addStates($effect, $propertyFieldName, $propertySchema, $negate, $isContains);
+    if (property_exists($conditionSchema, 'const')) {
+      $controlDefinition = $rootDefinition->findControlDefinition($scope);
+      if (NULL !== $controlDefinition) {
+        $this->statesBuilder->add($effect, $controlDefinition, $conditionSchema->const, $negate, $isContains);
       }
     }
 
-    if (property_exists($schema, 'contains')) {
-      $this->addStates($effect, $fieldName, $schema->contains, $negate, TRUE);
+    if (property_exists($conditionSchema, 'enum')) {
+      $controlDefinition = $rootDefinition->findControlDefinition($scope);
+      if (NULL !== $controlDefinition) {
+        $this->statesBuilder->add($effect, $controlDefinition, $conditionSchema->enum, $negate, $isContains);
+      }
+    }
+
+    if (property_exists($conditionSchema, 'not')) {
+      $this->addStates($effect, $rootDefinition, $scope, $conditionSchema->not, !$negate, $isContains);
+    }
+
+    if (property_exists($conditionSchema, 'contains')) {
+      $this->addStates($effect, $rootDefinition, $scope, $conditionSchema->contains, $negate, TRUE);
+    }
+
+    if (property_exists($conditionSchema, 'properties')) {
+      foreach ($conditionSchema->properties as $property => $propertyConditionSchema) {
+        $this->addStates(
+          $effect,
+          $rootDefinition,
+          "$scope/properties/$property",
+          $propertyConditionSchema,
+          $negate,
+          $isContains
+        );
+      }
     }
   }
 

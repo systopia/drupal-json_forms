@@ -71,11 +71,11 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       'rule' => $ruleSchema,
     ];
 
-    $definition = new MarkupDefinition($uiSchema);
+    $definition = new MarkupDefinition($uiSchema, NULL);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $this->statesArrayFactoryMock->method('createStatesArray')
-      ->with($ruleSchema)
+      ->with($definition)
       ->willReturn(['visible' => []]);
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
     static::assertEquals([
@@ -94,7 +94,7 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       'content' => '<em>test</em>',
     ];
 
-    $definition = new MarkupDefinition($uiSchema);
+    $definition = new MarkupDefinition($uiSchema, NULL);
     static::assertTrue($this->factory->supportsDefinition($definition));
 
     $form = $this->factory->createFormArray($definition, $this->formState, $this->formArrayFactoryMock);
@@ -114,7 +114,7 @@ final class HtmlMarkupArrayFactoryTest extends UnitTestCase {
       'label' => 'Label',
     ];
 
-    $definition = new MarkupDefinition($uiSchema);
+    $definition = new MarkupDefinition($uiSchema, NULL);
     static::assertFalse($this->factory->supportsDefinition($definition));
   }
 

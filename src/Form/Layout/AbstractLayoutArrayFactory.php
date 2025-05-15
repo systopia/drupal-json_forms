@@ -55,7 +55,7 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
     DescriptionDisplayUtil::handleDescriptionDisplay($form, $definition->getOptionsValue('descriptionDisplay'));
 
     if (NULL !== $definition->getRule()) {
-      $form['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
+      $form['#states'] = $this->statesArrayFactory->createStatesArray($definition);
     }
 
     return array_merge($form, $this->createElementsFormArray($definition, $formState, $formArrayFactory));

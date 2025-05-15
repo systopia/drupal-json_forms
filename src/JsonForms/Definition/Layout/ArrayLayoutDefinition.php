@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 SYSTOPIA GmbH
+ * Copyright (C) 2025 SYSTOPIA GmbH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,29 +19,20 @@
 
 declare(strict_types=1);
 
-namespace Drupal\json_forms\JsonForms\Definition;
+namespace Drupal\json_forms\JsonForms\Definition\Layout;
 
-interface DefinitionInterface {
+use Drupal\json_forms\JsonForms\Definition\DefinitionFactory;
+use Drupal\json_forms\JsonForms\Definition\DefinitionInterface;
 
-  /**
-   * @param mixed $default
-   *
-   * @return mixed
-   *   The value for the given keyword in the UI schema or $default if not set.
-   */
-  public function getKeywordValue(string $keyword, $default = NULL);
+/**
+ * This is used in controls that scope references an array. It differs from the
+ * normal LayoutDefinition that it uses itself as root definition instead of its
+ * own root definition.
+ */
+final class ArrayLayoutDefinition extends LayoutDefinition {
 
-  public function getRootDefinition(): DefinitionInterface;
-
-  public function getRule(): ?\stdClass;
-
-  public function getType(): string;
-
-  /**
-   * @return static
-   *   A new definition where the given scope prefix is prepended to the scopes
-   *   of all Controls.
-   */
-  public function withScopePrefix(string $scopePrefix): self;
+  protected function createElement(\stdClass $element, \stdClass $jsonSchema): DefinitionInterface {
+    return DefinitionFactory::createChildDefinition($element, $jsonSchema, $this->isReadonly(), $this);
+  }
 
 }

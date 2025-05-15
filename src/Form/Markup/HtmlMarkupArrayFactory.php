@@ -56,7 +56,7 @@ final class HtmlMarkupArrayFactory extends AbstractConcreteFormArrayFactory {
     ];
 
     if (NULL !== $definition->getRule()) {
-      $element['#states'] = $this->statesArrayFactory->createStatesArray($definition->getRule());
+      $element['#states'] = $this->statesArrayFactory->createStatesArray($definition);
     }
 
     return $element;
