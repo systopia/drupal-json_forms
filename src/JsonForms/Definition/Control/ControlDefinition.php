@@ -145,6 +145,10 @@ class ControlDefinition implements DefinitionInterface {
     return NULL;
   }
 
+  public function getContentMediaType(): ?string {
+    return $this->propertySchema->contentMediaType ?? NULL;
+  }
+
   public function getControlFormat(): ?string {
     return $this->controlSchema->options->format ?? NULL;
   }
