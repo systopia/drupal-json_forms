@@ -39,8 +39,11 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
 
   /**
    * {@inheritDoc}
+   *
+   * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
    */
   public function createFormArray(
+  // phpcs:enable
     DefinitionInterface $definition,
     FormStateInterface $formState,
     FormArrayFactoryInterface $formArrayFactory
@@ -85,6 +88,16 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     );
 
     if (0 === $numItems) {
+      if (0 !== $definition->getMaxItems()) {
+        // There might be a file field in the child elements. To ensure that the
+        // form is sent as multipart/form-data in case a file field is
+        // dynamically added, we claim that the form has a file element.
+        // If there's no file field initially, the form would be sent as
+        // application/x-www-form-urlencoded, i.e. file contents wouldn't be
+        // submitted.
+        $formState->setHasFileElement(TRUE);
+      }
+
       // Ensure we get an empty array if there's no item.
       $form[] = [
         '#type' => 'hidden',
