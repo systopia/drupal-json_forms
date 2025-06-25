@@ -84,7 +84,24 @@ final class ScopePointer {
    * @return array<string|int>
    */
   public function getPropertyPath(): array {
-    return array_values(array_filter($this->getPath(), fn ($value) => 'properties' !== $value && '' !== $value));
+    $consecutivePropertiesCount = 0;
+    return array_values(array_filter(
+      $this->getPath(),
+      function ($value) use (&$consecutivePropertiesCount) {
+        // There might be a property named "properties" and the corresponding
+        // scope would contain ".../properties/properties/...". Thus, we cannot
+        // just filter out every occurrence of "properties".
+        if ('properties' === $value) {
+          $consecutivePropertiesCount++;
+
+          return $consecutivePropertiesCount % 2 === 0;
+        }
+
+        $consecutivePropertiesCount = 0;
+
+        return '' !== $value;
+      }
+    ));
   }
 
   public function getScope(): string {
