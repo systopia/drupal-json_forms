@@ -16,6 +16,14 @@ disable_buttons_on_ajax:
   dependencies:
     - core/jquery
 
+number_input:
+  version: 0.1.0
+  js:
+    js/number-input.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 vertical_tabs:
   version: 0.1.0
   js:

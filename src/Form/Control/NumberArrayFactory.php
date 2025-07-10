@@ -50,6 +50,7 @@ final class NumberArrayFactory extends AbstractConcreteFormArrayFactory {
       '#type' => 'number',
       '#value_callback' => NumberValueCallback::class . '::convert',
       '#_type' => $definition->getType(),
+      '#attached' => ['library' => ['json_forms/number_input']],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
 
     if (NULL !== $definition->getExclusiveMinimum()) {
