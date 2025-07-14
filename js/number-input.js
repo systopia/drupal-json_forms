@@ -19,7 +19,7 @@
  * Restricts input of number fields to digits, decimal separator, and minus.
  */
 (function (Drupal, once) {
-  Drupal.behaviors.numberInput = {
+  Drupal.behaviors.json_forms_numberInput = {
     attach: function (context, settings) {
       // Decimal separator of browser.
       const decimalSeparator = Intl.NumberFormat()
