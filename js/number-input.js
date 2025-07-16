@@ -26,7 +26,34 @@
         .formatToParts(1.1)
         .find(part => part.type === 'decimal')
         .value;
-      const digits = '0123456789';
+
+      const digits = [
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+      ];
+
+      const allowedKeys = [
+        'ArrowDown',
+        'ArrowLeft',
+        'ArrowRight',
+        'ArrowUp',
+        'Backspace',
+        'Delete',
+        'End',
+        'Enter',
+        'Home',
+        'PageDown',
+        'PageUp',
+        'Tab',
+      ];
 
       function getElementLang(element) {
         if (element.lang) {
@@ -50,23 +77,45 @@
             .value;
         }
 
+        function isCharAllowed(char) {
+          if (digits.includes(char)) {
+            return true;
+          }
+
+          if ('-' === char) {
+            if (!element.value.includes('-') && (element.min < 0 || element.min === '' || element.min == null)) {
+              return true;
+            }
+          }
+          else if (decimalSeparators.includes(char)) {
+            if (!element.value.includes('.') && (element.step === 'any' || element.step < 1)) {
+              return true;
+            }
+          }
+
+          return false;
+        }
+
         element.addEventListener('keydown', function (event) {
-          if (event.key === 'Backspace' || '0123456789'.indexOf(event.key) !== -1) {
+          if (!event.ctrlKey && !allowedKeys.includes(event.key) && !isCharAllowed(event.key)) {
+            event.preventDefault();
+          }
+        });
+
+        element.addEventListener('paste', function (event) {
+          const data = event.clipboardData.getData('text/plain');
+          if (data === '') {
+            event.preventDefault();
             return;
           }
 
-          if ('-' === event.key) {
-            if (element.value.indexOf('-') === -1 && (element.min < 0 || element.min === '' || element.min == null)) {
-              return;
-            }
-          }
-          else if (decimalSeparators.indexOf(event.key) !== -1) {
-            if (element.value.indexOf('.') === -1 && (element.step === 'any' || element.step < 1)) {
-              return;
-            }
-          }
+          for (let i = 0; i < data.length; i++) {
+            if (!isCharAllowed(data[i])) {
+              event.preventDefault();
 
-          event.preventDefault();
+              return;
+            }
+          }
         });
       });
     }
