@@ -70,10 +70,19 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
       $form['#open'] = $definition->getOptionsValue('open', TRUE);
     }
 
+    if ((!$formState->isCached() || $definition->isReadOnly())) {
+      $items = $definition->getConst() ?? $formState->getTemporaryValue($definition->getPropertyPath())
+        ?? $definition->getDefault();
+      if (is_array($items)) {
+        $items = array_map(fn ($item) => $item instanceof \stdClass ? (array) $item : $item, $items);
+        $formState->setTemporaryValue($definition->getPropertyPath(), $items);
+      }
+    }
+
     $propertyAccessor = FormStatePropertyAccessor::create($formState, $definition->getPropertyFormParents());
     $numItems = $propertyAccessor->getProperty('numItems');
     if (NULL === $numItems) {
-      $items = $formState->getTemporaryValue($definition->getPropertyPath());
+      $items ??= $formState->getTemporaryValue($definition->getPropertyPath());
       $numItems = is_array($items) ? count($items) : ($definition->getMinItems() ?? 0);
       $propertyAccessor->setProperty('numItems', $numItems);
     }
