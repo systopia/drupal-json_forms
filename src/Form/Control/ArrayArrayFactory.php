@@ -209,19 +209,34 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
   }
 
   private function createLayoutDefinition(ArrayControlDefinition $definition): ArrayLayoutDefinition {
-    // Note: We actually do not use "detail" as it is described in JSON Forms:
+    // Note: We used to use "detail" as specification of the "normal" display,
+    // not as it is described in JSON Forms:
     // https://jsonforms.io/docs/uischema/controls#the-detail-option
-    // Should we use another option name instead?
-    $arrayUiSchema = $definition->getOptionsValue('detail');
-    if (!$arrayUiSchema instanceof \stdClass) {
-      $arrayUiSchema = new \stdClass();
+    // Now we use the option "elements" to specify individual controls for the
+    // properties of an item and the option "itemLayout" to specify the layout
+    // to display the elements.
+    $detail = $definition->getOptionsValue('detail');
+    Assertion::nullOrIsInstanceOf($detail, \stdClass::class);
+    if (isset($detail->type) || isset($detail->elements)) {
+      // phpcs:disable Drupal.Semantics.FunctionTriggerError.TriggerErrorTextLayoutRelaxed
+      @trigger_error(<<<EOD
+        The properties "type" and "elements" in option "detail" of an array
+        control are deprecated and were never supported in accordance to the
+        JSON Forms documentation. Use the options "itemLayout" and "elements"
+        instead.
+        EOD,
+        E_USER_DEPRECATED
+      );
+      // phpcs:enable
     }
 
-    $arrayUiSchema->type ??= 'TableRow';
+    $arrayUiSchema = new \stdClass();
+    $arrayUiSchema->type = $definition->getOptionsValue('itemLayout') ?? $detail->type ?? 'TableRow';
 
     $items = $definition->getItems();
     Assertion::isInstanceOf($items, \stdClass::class);
-    $arrayUiSchema->elements ??= $this->createElementSchemas($items);
+    $arrayUiSchema->elements = $definition->getOptionsValue('elements') ?? $detail->elements
+      ?? $this->createElementSchemas($items);
 
     return new ArrayLayoutDefinition(
       $arrayUiSchema, $items, $definition->isUiReadonly(), $definition->getRootDefinition()
