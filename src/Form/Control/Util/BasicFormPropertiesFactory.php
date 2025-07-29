@@ -83,9 +83,18 @@ final class BasicFormPropertiesFactory {
       '#_nullable' => $definition->isNullable(),
     ];
 
+    $readOnlyValuePath = array_merge(['readOnlyValues'], $definition->getPropertyPath());
     if ((!$formState->isCached() || $definition->isReadOnly())
-      && $formState->hasTemporaryValue($definition->getPropertyPath())) {
+      && $formState->hasTemporaryValue($definition->getPropertyPath())
+    ) {
       $form['#default_value'] = $formState->getTemporaryValue($definition->getPropertyPath());
+      if ($definition->isReadOnly() && !$definition->isCalculated()) {
+        // Ensure read only values don't get lost on submit.
+        $formState->set($readOnlyValuePath, $form['#default_value']);
+      }
+    }
+    elseif ($definition->isReadOnly() && $formState->has($readOnlyValuePath)) {
+      $form['#default_value'] = $formState->get($readOnlyValuePath);
     }
     elseif (NULL !== $definition->getDefault()) {
       $form['#default_value'] = $definition->getDefault();
