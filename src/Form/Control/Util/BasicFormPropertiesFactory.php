@@ -74,14 +74,26 @@ final class BasicFormPropertiesFactory {
    * Creates attributes for properties in Drupal FormElement for a Control.
    *
    * @phpstan-return array<string, mixed>
+   *
+   * phpcs:disable Generic.Metrics.CyclomaticComplexity.TooHigh
    */
   public static function createFieldProperties(ControlDefinition $definition, FormStateInterface $formState): array {
+  // phpcs:enable
     $form = [
       '#disabled' => $definition->isReadOnly(),
       '#required' => $definition->isRequired(),
       '#limit_validation_errors' => [],
       '#_nullable' => $definition->isNullable(),
     ];
+
+    $calcInitField = FALSE;
+    if ($definition->isCalculated()) {
+      $formState->set('$calculateUsed', TRUE);
+    }
+    elseif (!$formState->has('$hasCalcInitField')) {
+      $formState->set('$hasCalcInitField', TRUE);
+      $calcInitField = TRUE;
+    }
 
     $readOnlyValuePath = array_merge(['readOnlyValues'], $definition->getPropertyPath());
     if ((!$formState->isCached() || $definition->isReadOnly())
@@ -112,7 +124,7 @@ final class BasicFormPropertiesFactory {
       $form['#value'] = $definition->getConst();
     }
 
-    if (!$form['#disabled'] && TRUE === $formState->get('recalculateOnChange')) {
+    if ((!$form['#disabled'] && TRUE === $formState->get('recalculateOnChange')) || $calcInitField) {
       $form['#ajax'] = [
         'callback' => RecalculateCallback::class . '::onChange',
         'event' => 'change',
@@ -121,7 +133,13 @@ final class BasicFormPropertiesFactory {
       ];
     }
 
-    return array_merge(static::createBasicProperties($definition), $form);
+    $form += static::createBasicProperties($definition);
+    if ($calcInitField) {
+      // @phpstan-ignore offsetAccess.nonOffsetAccessible
+      $form['#attributes']['data-json-forms-init-calculation'] = '1';
+    }
+
+    return $form;
   }
 
 }
