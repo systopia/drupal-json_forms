@@ -130,6 +130,17 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $form['#attached']['library'][] = 'json_forms/disable_buttons_on_ajax';
     $form['#attached']['library'][] = 'json_forms/vertical_tabs';
 
+    if (!$formState->isCached()) {
+      if (TRUE === $formState->get('$calculateUsed')) {
+        $form['#attached']['library'][] = 'json_forms/initial_calculation';
+      }
+
+      // Drupal prevents caching on safe methods.
+      if (!$this->getRequest()->isMethodSafe()) {
+        $formState->setCached();
+      }
+    }
+
     return $form;
   }
 
