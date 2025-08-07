@@ -58,10 +58,12 @@ final class RadiosArrayFactory extends AbstractConcreteFormArrayFactory {
 
     if (is_bool($form['#default_value'] ?? NULL)) {
       // If default value is a boolean, the corresponding radio is not selected.
+      $form['#_actual_default_value'] = $form['#default_value'];
       $form['#default_value'] = $form['#default_value'] ? '1' : '0';
     }
     elseif (0 === ($form['#default_value'] ?? NULL)) {
       // If default value is 0, the corresponding radio is not selected.
+      $form['#_actual_default_value'] = $form['#default_value'];
       $form['#default_value'] = '0';
     }
 
