@@ -54,7 +54,12 @@ final class OptionValueCallbacks {
   public static function value(array $element, $input, FormStateInterface $formState) {
     $defaultUsed = FALSE;
     if (FALSE === $input) {
-      $input = $element['#default_value'] ?? NULL;
+      if (array_key_exists('#_actual_default_value', $element)) {
+        $input = $element['#_actual_default_value'];
+      }
+      else {
+        $input = $element['#default_value'] ?? NULL;
+      }
       $defaultUsed = TRUE;
     }
 
