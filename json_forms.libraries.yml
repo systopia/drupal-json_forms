@@ -16,6 +16,14 @@ disable_buttons_on_ajax:
   dependencies:
     - core/jquery
 
+initial_calculation:
+  version: 0.1.0
+  js:
+    js/initial-calculation.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 number_input:
   version: 0.1.0
   js:

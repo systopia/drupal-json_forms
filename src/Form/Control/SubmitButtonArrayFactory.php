@@ -63,8 +63,9 @@ final class SubmitButtonArrayFactory extends AbstractConcreteFormArrayFactory {
       // Override value set in BasicFormPropertiesFactory.
       '#limit_validation_errors' => NULL,
       '#_data' => $definition->getOptionsValue('data'),
-      '#attributes' => ['class' => ['json-forms-submit']],
     ] + BasicFormPropertiesFactory::createFieldProperties($definition, $formState);
+    // @phpstan-ignore-next-line
+    $form['#attributes']['class'][] = 'json-forms-submit';
 
     if (NULL !== $definition->getOptionsValue('confirm')) {
       // @phpstan-ignore-next-line
