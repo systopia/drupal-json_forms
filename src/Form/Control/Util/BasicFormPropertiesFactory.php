@@ -90,7 +90,7 @@ final class BasicFormPropertiesFactory {
     if ($definition->isCalculated()) {
       $formState->set('$calculateUsed', TRUE);
     }
-    elseif (!$formState->has('$hasCalcInitField')) {
+    elseif (TRUE !== $formState->get('$hasCalcInitField') && 'hidden' !== $definition->getOptionsValue('type')) {
       $formState->set('$hasCalcInitField', TRUE);
       $calcInitField = TRUE;
     }

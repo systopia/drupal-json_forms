@@ -116,6 +116,10 @@ abstract class AbstractJsonFormsForm extends FormBase {
       $formState->set('$limitValidationUsed', TRUE);
     }
 
+    if ($formState->isRebuilding()) {
+      $formState->set('$hasCalcInitField', FALSE);
+    }
+
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);
     $form = $this->formArrayFactory->createFormArray($definition, $formState);
 
@@ -130,7 +134,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $form['#attached']['library'][] = 'json_forms/disable_buttons_on_ajax';
     $form['#attached']['library'][] = 'json_forms/vertical_tabs';
 
-    if (!$formState->isCached()) {
+    if (!$formState->isCached() || $formState->isRebuilding()) {
       if (TRUE === $formState->get('$calculateUsed')) {
         $form['#attached']['library'][] = 'json_forms/initial_calculation';
       }
