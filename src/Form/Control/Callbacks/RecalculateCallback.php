@@ -28,16 +28,23 @@ use Drupal\json_forms\Form\Util\FieldNameUtil;
 final class RecalculateCallback {
 
   /**
-   * @phpstan-param array<int|string, mixed> $form $form
+   * This method may be used by other modules to have custom AJAX callbacks that
+   * sill can perform recalculation.
    */
-  public static function onChange(array &$form, FormStateInterface $formState): AjaxResponse {
+  public static function addAjaxCommands(AjaxResponse $response, FormStateInterface $formState): void {
     /** @var \Drupal\json_forms\Form\AbstractJsonFormsForm $formObject */
     $formObject = $formState->getFormObject();
     $newData = FieldNameUtil::toFormData($formObject->calculateData($formState));
     $oldData = $formState->getValues();
-
-    $response = new AjaxResponse();
     RecalculateCallbackUtil::addAjaxCommands($response, $formState, $oldData, $newData);
+  }
+
+  /**
+   * @phpstan-param array<int|string, mixed> $form $form
+   */
+  public static function onChange(array &$form, FormStateInterface $formState): AjaxResponse {
+    $response = new AjaxResponse();
+    self::addAjaxCommands($response, $formState);
 
     return $response;
   }
