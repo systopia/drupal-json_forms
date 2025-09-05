@@ -154,9 +154,9 @@ abstract class AbstractJsonFormsForm extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $formState): void {
     parent::validateForm($form, $formState);
-    FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
 
     if ($formState->isSubmitted() || $formState->isValidationEnforced()) {
+      FormCallbackExecutor::executePreSchemaValidationCallbacks($formState);
       if (TRUE === $formState->get('$limitValidationUsed')) {
         // We cannot use Drupal validation errors if the form uses limited
         // validation. They might contain errors that with the submitted data
