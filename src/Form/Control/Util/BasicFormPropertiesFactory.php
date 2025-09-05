@@ -90,7 +90,13 @@ final class BasicFormPropertiesFactory {
     if ($definition->isCalculated()) {
       $formState->set('$calculateUsed', TRUE);
     }
-    elseif (TRUE !== $formState->get('$hasCalcInitField') && 'hidden' !== $definition->getOptionsValue('type')) {
+    elseif (TRUE !== $formState->get('$hasCalcInitField')
+      // Change event cannot be triggered on hidden fields.
+      && 'hidden' !== $definition->getOptionsValue('type')
+      // A field of type managed_field might be used which is rendered in a way
+      // that it cannot be used as field for initial calculation.
+      && 'file' !== $definition->getControlFormat()
+    ) {
       $formState->set('$hasCalcInitField', TRUE);
       $calcInitField = TRUE;
     }
@@ -126,7 +132,7 @@ final class BasicFormPropertiesFactory {
 
     if ((!$form['#disabled'] && TRUE === $formState->get('recalculateOnChange')) || $calcInitField) {
       $form['#ajax'] = [
-        'callback' => RecalculateCallback::class . '::onChange',
+        'callback' => [RecalculateCallback::class, 'onChange'],
         'event' => 'change',
         'progress' => [],
         'disable-refocus' => TRUE,
