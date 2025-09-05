@@ -54,6 +54,7 @@ final class ArrayCallbacks {
     $data = $formObject->calculateData($formState);
     $formState->setTemporary($data);
 
+    $formState->clearErrors();
     $formState->setRebuild();
   }
 
@@ -145,6 +146,14 @@ final class ArrayCallbacks {
     Assertion::integer($pos);
     $indexToRemove = (int) substr($name, $pos + 1);
 
+    $formInput = $formState->getUserInput();
+    $arrayInput = &NestedArray::getValue($formInput, $propertyPath);
+    if (is_array($arrayInput)) {
+      // Update input so value callbacks get the correct values.
+      unset($arrayInput[$indexToRemove]);
+      $arrayInput = array_values($arrayInput);
+    }
+
     $arrayItems = $formState->getValue($propertyPath);
     Assertion::isArray($arrayItems);
     unset($arrayItems[$indexToRemove]);
@@ -163,6 +172,7 @@ final class ArrayCallbacks {
     Assertion::integer($numItems);
     $propertyAccessor->setProperty('numItems', $numItems - 1);
 
+    $formState->clearErrors();
     $formState->setRebuild();
   }
 
