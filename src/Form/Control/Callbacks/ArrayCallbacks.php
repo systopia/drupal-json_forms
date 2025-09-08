@@ -146,7 +146,7 @@ final class ArrayCallbacks {
     Assertion::integer($pos);
     $indexToRemove = (int) substr($name, $pos + 1);
 
-    $formInput = $formState->getUserInput();
+    $formInput = &$formState->getUserInput();
     $arrayInput = &NestedArray::getValue($formInput, $propertyPath);
     if (is_array($arrayInput)) {
       // Update input so value callbacks get the correct values.
