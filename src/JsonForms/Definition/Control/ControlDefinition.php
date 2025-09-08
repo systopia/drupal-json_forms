@@ -189,7 +189,7 @@ class ControlDefinition implements DefinitionInterface {
    * {@inheritDoc}
    */
   public function getKeywordValue(string $keyword, $default = NULL) {
-    return $this->uiSchema->{$keyword} ?? $default;
+    return $this->controlSchema->{$keyword} ?? $default;
   }
 
   public function getLabel(): string {
