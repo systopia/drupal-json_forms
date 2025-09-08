@@ -48,9 +48,7 @@ final class CheckboxesArrayFactory extends AbstractConcreteFormArrayFactory {
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $definition = ArrayControlDefinition::fromDefinition($definition);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition $definition */
     $form = [
       '#type' => 'checkboxes',
       // @todo Handle non-string values and integerish strings.

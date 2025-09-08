@@ -24,7 +24,6 @@ parameters:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
 		# Wrong phpdoc type hint in Drupal
 		- '/^Parameter #1 \$key of method Drupal\\Core\\Form\\FormStateInterface::hasTemporaryValue\(\) expects string, array<int\|string> given.$/'
-		- '#^Method Drupal\\Core\\Form\\FormBuilderInterface::getForm\(\) invoked with \d+ parameters, 1 required.$#'
 		-
 			message: '#^Variable property access on mixed.$#'
 			paths:

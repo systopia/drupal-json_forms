@@ -49,9 +49,7 @@ final class ArrayArrayFactory extends AbstractConcreteFormArrayFactory {
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $definition = ArrayControlDefinition::fromDefinition($definition);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ArrayControlDefinition $definition */
 
     $fieldsetWrapperId = 'array-wrapper-' . str_replace('.', '__', implode('_', $definition->getPropertyPath()));
     // phpcs:disable Drupal.Commenting.InlineComment.DocBlock

@@ -24,7 +24,7 @@ namespace Drupal\json_forms\Form\Util;
 final class DescriptionDisplayUtil {
 
   /**
-   * @phpstan-param array<string, mixed> $form
+   * @phpstan-param array<int|string, mixed> $form
    */
   public static function handleDescriptionDisplay(array &$form, ?string $descriptionDisplay): void {
     if (NULL !== $descriptionDisplay) {

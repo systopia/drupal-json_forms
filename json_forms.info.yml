@@ -2,8 +2,8 @@ name: JSONForms
 type: module
 description: Create a Drupal form from a JSONForms definition.
 package: JSONForms
-core_version_requirement: ^9.5 || ^10
-php: 7.4
+core_version_requirement: ^10 || ^11
+php: 8.1
 hidden: true
 version: 0.7.1-dev
 'interface translation project': json_forms

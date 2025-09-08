@@ -48,7 +48,6 @@ abstract class AbstractLayoutArrayFactory extends AbstractConcreteFormArrayFacto
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, LayoutDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Layout\LayoutDefinition $definition */
     $form = $this->createBasicFormArray($definition);
 
     // @phpstan-ignore argument.type

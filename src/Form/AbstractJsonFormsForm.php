@@ -108,6 +108,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
     $formState->set('uiSchema', $uiSchema);
     $formState->set('recalculateOnChange', $recalculateOnChange);
 
+    // @phpstan-ignore equal.notAllowed
     if (new \stdClass() == $uiSchema) {
       return [];
     }

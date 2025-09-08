@@ -62,6 +62,7 @@ final class NumberValueCallback {
       $value = \trim($value);
     }
 
+    // @phpstan-ignore equal.notAllowed
     return \is_numeric($value) && $value == (string) $value;
   }
 
