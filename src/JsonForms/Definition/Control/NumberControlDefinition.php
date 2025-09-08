@@ -26,7 +26,7 @@ use Drupal\json_forms\Util\ConvertUtil;
 class NumberControlDefinition extends ControlDefinition {
 
   public function getMultipleOf(): ?int {
-    return ConvertUtil::stdClassToNull($this->getpropertySchema->multipleOf ?? NULL);
+    return ConvertUtil::stdClassToNull($this->propertySchema->multipleOf ?? NULL);
   }
 
   /**
