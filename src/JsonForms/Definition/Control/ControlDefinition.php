@@ -46,12 +46,7 @@ class ControlDefinition implements DefinitionInterface {
 
   private ?string $scopePrefix;
 
-  /**
-   * @param \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition
-   *
-   * @return static
-   */
-  public static function fromDefinition(ControlDefinition $definition): self {
+  public static function fromDefinition(ControlDefinition $definition): static {
     return new static(
       $definition->controlSchema,
       $definition->objectSchema,
@@ -263,7 +258,7 @@ class ControlDefinition implements DefinitionInterface {
    * @return string Value of the attribute "name" in HTML.
    */
   public function getPropertyFormName(): string {
-    if (NULL == $this->propertyFormName) {
+    if (NULL === $this->propertyFormName) {
       $this->propertyFormName = FormPropertyUtil::getFormNameForPropertyPath($this->getPropertyPath());
     }
 
@@ -326,6 +321,7 @@ class ControlDefinition implements DefinitionInterface {
    */
   public function getType(): string {
     if (is_array($this->propertySchema->type)) {
+      /** @var string $type */
       foreach ($this->propertySchema->type as $type) {
         if ('null' !== $type) {
           return $type;

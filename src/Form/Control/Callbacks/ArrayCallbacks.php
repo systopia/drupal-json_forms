@@ -102,6 +102,7 @@ final class ArrayCallbacks {
     $propertyPath = $triggeringElement['#_controlPropertyPath'];
 
     $arrayForm = &self::getArrayForm($form, $triggeringElement);
+    // @phpstan-ignore argument.type
     FormValueAccessor::setValue($arrayForm['items'], $propertyPath, $formState->getTemporaryValue($propertyPath));
 
     /** @var \Drupal\Core\Render\MainContent\AjaxRenderer $ajaxRenderer */

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.4', '8.0', '8.2']
+        php-versions: ['8.1', '8.4']
         prefer: ['prefer-stable', 'prefer-lowest']
     name: PHPStan with PHP ${{ matrix.php-versions }} ${{ matrix.prefer }}
 
@@ -42,4 +42,4 @@ jobs:
         composer composer-phpstan -- update --no-progress --prefer-dist --optimize-autoloader
 
     - name: Run PHPStan
-      run: composer phpstan -- analyse -c phpstan.neon.dist
+      run: composer phpstan -- analyze -c phpstan.ci.neon

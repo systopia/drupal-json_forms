@@ -42,9 +42,7 @@ class StringArrayFactory extends AbstractConcreteFormArrayFactory {
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $definition = StringControlDefinition::fromDefinition($definition);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\StringControlDefinition $definition */
 
     $form = [
       '#type' => TRUE === $definition->getOptionsValue('multi', FALSE) ? 'textarea' : 'textfield',

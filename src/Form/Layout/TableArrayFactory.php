@@ -59,6 +59,7 @@ final class TableArrayFactory extends AbstractLayoutArrayFactory {
     }
 
     /** @phpstan-var array<string|array<string, mixed>> $header */
+    // @phpstan-ignore varTag.type
     return $header;
   }
 

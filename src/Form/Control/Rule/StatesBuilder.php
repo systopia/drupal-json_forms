@@ -150,7 +150,7 @@ final class StatesBuilder {
   /**
    * @phpstan-param scalar|array<scalar>|null $value
    *
-   * @phpstan-return array<string|int, conditionT|'or'>>
+   * @phpstan-return array<string|int, conditionT|'or'>
    */
   private function buildContainsCondition(string $fieldName, $value): array {
     if (!is_array($value)) {

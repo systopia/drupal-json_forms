@@ -42,9 +42,7 @@ final class NumberArrayFactory extends AbstractConcreteFormArrayFactory {
     FormArrayFactoryInterface $formArrayFactory
   ): array {
     Assertion::isInstanceOf($definition, ControlDefinition::class);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition $definition */
     $definition = NumberControlDefinition::fromDefinition($definition);
-    /** @var \Drupal\json_forms\JsonForms\Definition\Control\NumberControlDefinition $definition */
 
     $form = [
       '#type' => 'number',

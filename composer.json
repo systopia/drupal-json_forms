@@ -36,13 +36,13 @@
         }
     },
     "require": {
-        "php": "^7.4 || ^8",
+        "php": "^8.1",
         "systopia/expression-language-ext": "~0.1",
         "systopia/opis-json-schema-ext": "~0.2"
     },
     "require-dev": {
-        "drupal/core": "^9.5 || ^10",
-        "drupal/core-dev": "^9.5 || ^10"
+        "drupal/core": "^10 || ^11",
+        "drupal/core-dev": "^10 || ^11"
     },
     "scripts": {
         "composer-phpstan": [

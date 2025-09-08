@@ -53,6 +53,7 @@ final class BasicFormPropertiesFactory {
     DescriptionDisplayUtil::handleDescriptionDisplay($form, $definition->getOptionsValue('descriptionDisplay'));
 
     if (NULL !== $definition->getOptionsValue('placeholder')) {
+      // @phpstan-ignore offsetAccess.nonOffsetAccessible
       $form['#attributes']['placeholder'] = $definition->getOptionsValue('placeholder');
     }
 

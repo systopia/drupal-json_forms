@@ -69,6 +69,7 @@ final class RecalculateCallbackUtil {
     if ($oldData === $newData
       || NULL === $newData && '' === $oldData
       || \is_numeric($newData) && \is_numeric($oldData) && (float) $newData === (float) $oldData
+      // @phpstan-ignore equal.notAllowed
       || (is_bool($newData) && !$strictBooleanComparison && $newData == $oldData)
     ) {
       return;

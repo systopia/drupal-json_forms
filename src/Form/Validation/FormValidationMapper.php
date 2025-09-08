@@ -44,7 +44,7 @@ final class FormValidationMapper implements FormValidationMapperInterface {
       $element = [
         '#parents' => FormValidationUtil::getFormErrorMapping(
           $formState,
-          // @phpstan-ignore argument.type
+          // @phpstan-ignore argument.type, argument.type
           FieldNameUtil::toFormParents($pointer->absolutePath())
         ),
       ];

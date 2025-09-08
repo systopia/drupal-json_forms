@@ -1,0 +1,9 @@
+includes:
+	- phpstan.neon.dist
+
+parameters:
+	# Because we test with different versions in CI we have unmatched errors
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		# Required for Drupal 10.
+		- '#^Method Drupal\\Core\\Form\\FormBuilderInterface::getForm\(\) invoked with \d+ parameters, 1 required.$#'
