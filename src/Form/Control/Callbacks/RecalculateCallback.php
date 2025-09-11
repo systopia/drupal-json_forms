@@ -32,6 +32,10 @@ final class RecalculateCallback {
    * sill can perform recalculation.
    */
   public static function addAjaxCommands(AjaxResponse $response, FormStateInterface $formState): void {
+    // Even though the triggering element has #limit_validation_errors set to []
+    // form state might contain errors, e.g. if a no radio button of a required
+    // radios element was selected.
+    $formState->clearErrors();
     /** @var \Drupal\json_forms\Form\AbstractJsonFormsForm $formObject */
     $formObject = $formState->getFormObject();
     $newData = FieldNameUtil::toFormData($formObject->calculateData($formState));
