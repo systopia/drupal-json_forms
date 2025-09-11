@@ -17,7 +17,7 @@ disable_buttons_on_ajax:
     - core/jquery
 
 initial_calculation:
-  version: 0.1.0
+  version: 0.1.1
   js:
     js/initial-calculation.js: {}
   dependencies:
