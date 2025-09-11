@@ -61,7 +61,6 @@ final class SelectArrayFactory extends AbstractConcreteFormArrayFactory {
     if (!$definition->isRequired()) {
       $form['#empty_value'] = '';
     }
-    // @phpstan-ignore offsetAccess.nonOffsetAccessible
     if (isset($form['#options']['']) && '' !== $form['#options']['']) {
       $form['#empty_option'] = $form['#options'][''];
     }

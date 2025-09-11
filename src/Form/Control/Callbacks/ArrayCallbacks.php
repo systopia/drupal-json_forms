@@ -188,6 +188,7 @@ final class ArrayCallbacks {
   private static function &getArrayForm(array &$form, array $triggeringElement): array {
     $arrayParents = $triggeringElement['#array_parents'];
     Assertion::isArray($arrayParents);
+    /** @var list<int|string> $arrayParents */
     $propertyPath = $triggeringElement['#_controlPropertyPath'];
     Assertion::isArray($propertyPath);
 
