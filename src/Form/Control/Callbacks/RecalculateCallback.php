@@ -40,6 +40,21 @@ final class RecalculateCallback {
   }
 
   /**
+   * @param array<int|string, mixed> $element
+   *
+   * @return array<int|string, mixed>
+   */
+  public static function processElement(array $element, FormStateInterface $formState): array {
+    if (TRUE !== $formState->get('$calculateUsed')) {
+      if (is_array($element['#ajax'] ?? NULL) && [static::class, 'onChange'] === $element['#ajax']['callback']) {
+        unset($element['#ajax']);
+      }
+    }
+
+    return $element;
+  }
+
+  /**
    * @phpstan-param array<int|string, mixed> $form $form
    */
   public static function onChange(array &$form, FormStateInterface $formState): AjaxResponse {

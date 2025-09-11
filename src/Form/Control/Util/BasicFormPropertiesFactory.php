@@ -138,6 +138,9 @@ final class BasicFormPropertiesFactory {
         'progress' => [],
         'disable-refocus' => TRUE,
       ];
+      $form['#process'] = [
+        [RecalculateCallback::class, 'processElement'],
+      ];
     }
 
     $form += static::createBasicProperties($definition);
