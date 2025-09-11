@@ -62,8 +62,11 @@ abstract class AbstractJsonFormsForm extends FormBase {
    * @return static
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get(FormArrayFactoryInterface::class),
-      $container->get(FormValidatorInterface::class), $container->get(FormValidationMapperInterface::class));
+    return new static(
+      $container->get(FormArrayFactoryInterface::class),
+      $container->get(FormValidatorInterface::class),
+      $container->get(FormValidationMapperInterface::class)
+    );
   }
 
   public function __construct(
@@ -260,7 +263,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
    *
    * phpcs:disable Generic.Files.LineLength.TooLong
    */
-  private function determineLimitValidationErrors(FormStateInterface &$formState): ?array {
+  private function determineLimitValidationErrors(FormStateInterface $formState): ?array {
     // While this element is being validated, it may be desired that some
     // calls to \Drupal\Core\Form\FormStateInterface::setErrorByName() be
     // suppressed and not result in a form error, so that a button that
@@ -284,7 +287,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
     // setting the #limit_validation_errors property. For button element
     // types, #limit_validation_errors defaults to FALSE, so that full
     // validation is their default behavior.
-    elseif ($triggering_element && !isset($triggering_element['#limit_validation_errors']) && !$formState->isSubmitted()) {
+    elseif (NULL !== $triggering_element && !isset($triggering_element['#limit_validation_errors']) && !$formState->isSubmitted()) {
       return [];
     }
     // As an extra security measure, explicitly turn off error suppression if
