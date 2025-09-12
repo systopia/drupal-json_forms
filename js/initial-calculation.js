@@ -18,14 +18,22 @@
 /**
  * Performs a calculation when a form is initially loaded.
  */
-(function (Drupal, once) {
+(function (Drupal, once, $) {
   Drupal.behaviors.json_forms_initial_calculation = {
     attach: function (context, settings) {
       once('json-forms-initial-calculation', '[data-json-forms-init-calculation="1"]', context).forEach((element) => {
+        if (element.disabled) {
+          // Drupal enables the element after the AJAX call so we have to disable it again.
+          const handler = function (event) {
+            element.disabled = true;
+            $(document).off('ajaxStop', handler);
+          };
+          $(document).on('ajaxStop', handler);
+        }
         // Trigger a "change" event which results in an AJAX call that performs the calculations.
         element.dispatchEvent(new Event('change'));
       });
     }
   };
 
-})(Drupal, once);
+})(Drupal, once, jQuery);
