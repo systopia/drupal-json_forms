@@ -44,10 +44,27 @@ final class RecalculateCallback {
    *
    * @return array<int|string, mixed>
    */
-  public static function processElement(array $element, FormStateInterface $formState): array {
+  public static function processElement(array &$element, FormStateInterface &$formState): array {
     if (TRUE !== $formState->get('$calculateUsed')) {
       if (is_array($element['#ajax'] ?? NULL) && [static::class, 'onChange'] === $element['#ajax']['callback']) {
         unset($element['#ajax']);
+      }
+    }
+
+    if (isset($element['#type'])) {
+      assert(is_string($element['#type']));
+      /** @var \Drupal\Core\Render\ElementInfoManagerInterface $elementInfoManager */
+      $elementInfoManager = \Drupal::service('plugin.manager.element_info');
+      $info = $elementInfoManager->getInfo($element['#type']);
+      foreach ($info['#process'] ?? [] as $callback) {
+        $completeForm = &$formState->getCompleteForm();
+        /** @var array<int|string, mixed> $element */
+        // @phpstan-ignore parameterByRef.type
+        $element = call_user_func_array(
+          // @phpstan-ignore argument.type
+          $formState->prepareCallback($callback),
+          [&$element, &$formState, &$completeForm]
+        );
       }
     }
 
