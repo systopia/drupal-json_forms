@@ -6,4 +6,4 @@ core_version_requirement: ^10 || ^11
 php: 8.1
 dependencies:
   - json_forms:json_forms
-version: 0.7.2-dev
+version: 0.7.2
