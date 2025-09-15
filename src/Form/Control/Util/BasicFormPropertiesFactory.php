@@ -23,6 +23,7 @@ namespace Drupal\json_forms\Form\Control\Util;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Control\Callbacks\RecalculateCallback;
+use Drupal\json_forms\Form\Control\Callbacks\TriggeringElementCallback;
 use Drupal\json_forms\Form\Control\Rule\StatesArrayFactory;
 use Drupal\json_forms\Form\Util\DescriptionDisplayUtil;
 use Drupal\json_forms\JsonForms\Definition\Control\ControlDefinition;
@@ -141,6 +142,11 @@ final class BasicFormPropertiesFactory {
       $form['#process'] = [
         [RecalculateCallback::class, 'processElement'],
       ];
+      if ($calcInitField && $form['#disabled']) {
+        $form['#after_build'] = [
+          [TriggeringElementCallback::class, 'onAfterBuild'],
+        ];
+      }
     }
 
     $form += static::createBasicProperties($definition);
