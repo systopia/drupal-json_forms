@@ -25,6 +25,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_forms\Form\Util\FieldNameUtil;
 use Drupal\json_forms\Form\Util\FormCallbackExecutor;
+use Drupal\json_forms\Form\Util\FormCallbackRegistrator;
 use Drupal\json_forms\Form\Util\FormValidationUtil;
 use Drupal\json_forms\Form\Validation\FormValidationMapperInterface;
 use Drupal\json_forms\Form\Validation\FormValidatorInterface;
@@ -122,6 +123,7 @@ abstract class AbstractJsonFormsForm extends FormBase {
 
     if ($formState->isRebuilding()) {
       $formState->set('$hasCalcInitField', FALSE);
+      FormCallbackRegistrator::clearPreSchemaValidationCallbacks($formState);
     }
 
     $definition = DefinitionFactory::createDefinition($uiSchema, $jsonSchema);

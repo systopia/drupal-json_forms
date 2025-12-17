@@ -26,6 +26,10 @@ final class FormCallbackRegistrator {
 
   public const PRE_SCHEMA_VALIDATION_CALLBACKS_PROPERTY_KEY = 'json_forms.pre_schema_validation_callbacks';
 
+  public static function clearPreSchemaValidationCallbacks(FormStateInterface $formState): void {
+    $formState->set(self::PRE_SCHEMA_VALIDATION_CALLBACKS_PROPERTY_KEY, []);
+  }
+
   /**
    * Registers a callback that is executed before JSON schema validation.
    *
