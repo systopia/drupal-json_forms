@@ -31,7 +31,7 @@ final class VerticalLayoutArrayFactory extends AbstractLayoutArrayFactory {
   }
 
   protected function createBasicFormArray(LayoutDefinition $definition): array {
-    return ['#type' => 'fieldset'];
+    return ['#type' => 'container'];
   }
 
 }
