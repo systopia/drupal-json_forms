@@ -32,7 +32,7 @@ final class HorizontalLayoutArrayFactory extends AbstractLayoutArrayFactory {
 
   protected function createBasicFormArray(LayoutDefinition $definition): array {
     return [
-      '#type' => 'fieldset',
+      '#type' => 'container',
       '#attributes' => ['class' => ['container-inline']],
     ];
   }
