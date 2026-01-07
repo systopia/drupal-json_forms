@@ -53,6 +53,13 @@ final class FormArrayFactory implements FormArrayFactoryInterface {
           $formState->set(['form', $definition->getPropertyFormName()], $form);
         }
 
+        // @phpstan-ignore offsetAccess.nonOffsetAccessible
+        $form['#attributes']['class'] =
+          // @phpstan-ignore binaryOp.invalid
+          ($definition->getOptionsValue('cssClasses') ?? []) +
+          // @phpstan-ignore offsetAccess.nonOffsetAccessible
+          ($form['#attributes']['class'] ?? []);
+
         return $form;
       }
     }

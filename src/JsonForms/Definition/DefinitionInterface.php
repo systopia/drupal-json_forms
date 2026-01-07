@@ -23,6 +23,10 @@ namespace Drupal\json_forms\JsonForms\Definition;
 
 interface DefinitionInterface {
 
+  public function getOptions(): ?\stdClass;
+
+  public function getOptionsValue(string $key, mixed $default = NULL): mixed;
+
   /**
    * @param mixed $default
    *
