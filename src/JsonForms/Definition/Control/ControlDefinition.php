@@ -216,13 +216,7 @@ class ControlDefinition implements DefinitionInterface {
     return $this->controlSchema->options ?? NULL;
   }
 
-  /**
-   * @param string $key
-   * @param mixed $default
-   *
-   * @return mixed
-   */
-  public function getOptionsValue(string $key, $default = NULL) {
+  public function getOptionsValue(string $key, mixed $default = NULL): mixed {
     return $this->controlSchema->options->{$key} ?? $default;
   }
 

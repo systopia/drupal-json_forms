@@ -61,6 +61,29 @@ be achieved with this CSS selector:
 ```css
 :not(.json-forms-description-tooltip)
 ```
+### Custom CSS Classes
+
+For any control and layout it is possible to specify CSS classes in the UI
+schema that will be added to the generated HTML code. The classes can be set at
+the property `cssClasses` in the `options` property, e.g.:
+
+```json
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/name",
+      "options": {
+        "cssClasses": ["my-name-control-class"]
+      }
+    }
+  ],
+  "options": {
+    "cssClasses": ["my-layout-class"]
+  }
+}
+```
 
 ## Limitations
 

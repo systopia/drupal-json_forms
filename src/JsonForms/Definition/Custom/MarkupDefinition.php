@@ -52,6 +52,15 @@ final class MarkupDefinition implements DefinitionInterface {
     return $this->markupSchema->contentMediaType;
   }
 
+  public function getOptions(): ?\stdClass {
+    return $this->markupSchema->options ?? NULL;
+  }
+
+  public function getOptionsValue(string $key, mixed $default = NULL): mixed {
+    // @phpstan-ignore property.dynamicName
+    return $this->markupSchema->options->{$key} ?? $default;
+  }
+
   /**
    * {@inheritDoc}
    */

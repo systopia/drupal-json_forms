@@ -50,6 +50,15 @@ final class CustomDefinition implements DefinitionInterface {
     $this->rootDefinition = $rootDefinition ?? $this;
   }
 
+  public function getOptions(): ?\stdClass {
+    return $this->uiSchema->options ?? NULL;
+  }
+
+  public function getOptionsValue(string $key, mixed $default = NULL): mixed {
+    // @phpstan-ignore property.dynamicName
+    return $this->uiSchema->options->{$key} ?? $default;
+  }
+
   /**
    * {@inheritDoc}
    */
